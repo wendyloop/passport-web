@@ -17,13 +17,11 @@ export const Route = createFileRoute("/")({
 });
 
 const INTERVIEW_CATEGORIES = [
-  { id: "faang", label: "FAANG / Big Tech", hint: "Meta, Apple, Amazon, Netflix, Google, Microsoft" },
-  { id: "mbb", label: "MBB Consulting", hint: "McKinsey, BCG, Bain" },
-  { id: "tier2-consulting", label: "Tier 2 Consulting", hint: "Deloitte, Accenture, Oliver Wyman, etc." },
+  { id: "bigtech", label: "FAANG / Big Tech & Unicorn Startups", hint: "Meta, Apple, Amazon, Netflix, Google, Microsoft, Stripe, OpenAI, Anthropic, SpaceX, etc." },
+  { id: "consulting", label: "MBB & Tier 2 Consulting", hint: "McKinsey, BCG, Bain, Deloitte, Accenture, Oliver Wyman, etc." },
   { id: "vc", label: "Venture Capital", hint: "a16z, Sequoia, Benchmark, etc." },
   { id: "pe-hf", label: "Private Equity / Hedge Funds", hint: "Blackstone, Citadel, Two Sigma, etc." },
   { id: "ib", label: "Investment Banking", hint: "Goldman Sachs, Morgan Stanley, JPM, etc." },
-  { id: "unicorn", label: "Unicorn Startups", hint: "Stripe, OpenAI, Anthropic, SpaceX, etc." },
   { id: "yc", label: "YC / Early-stage Startups", hint: "Y Combinator companies, seed-stage" },
 ] as const;
 
