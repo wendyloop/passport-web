@@ -183,7 +183,7 @@ function Index() {
 
         <div className="pt-2 space-y-4">
           <div className="rounded-lg border border-border bg-muted/30 p-4 text-sm text-muted-foreground">
-            <strong className="text-foreground">What happens next:</strong> We review every submission and reach out directly when a specific role matches your background. Your information is never shared without your explicit approval for a particular opportunity.
+            <strong className="text-foreground">What happens next:</strong> We review every submission and reach out directly when a specific role matches your background.
           </div>
           <div className="flex justify-end">
           <Button
