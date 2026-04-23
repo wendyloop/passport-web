@@ -122,7 +122,7 @@ function Index() {
         <Card className="p-6 sm:p-8" style={{ boxShadow: "var(--shadow-card)" }}>
           <SectionHeader step={2} title="Previous interviews" />
           <p className="text-sm text-muted-foreground mt-1">
-            Check any category where you've reached a final round (or close to it). Add specifics below.
+            Check any category where you've reached a <strong className="text-foreground">final round</strong> interview. You may be asked to provide screenshots to verify accuracy.
           </p>
           <div className="grid sm:grid-cols-2 gap-3 mt-5">
             {INTERVIEW_CATEGORIES.map((cat) => {
