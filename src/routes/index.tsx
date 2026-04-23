@@ -17,12 +17,10 @@ export const Route = createFileRoute("/")({
 });
 
 const INTERVIEW_CATEGORIES = [
-  { id: "bigtech", label: "FAANG / Big Tech & Unicorn Startups", hint: "Meta, Apple, Amazon, Netflix, Google, Microsoft, Stripe, OpenAI, Anthropic, SpaceX, etc." },
-  { id: "consulting", label: "MBB & Tier 2 Consulting", hint: "McKinsey, BCG, Bain, Deloitte, Accenture, Oliver Wyman, etc." },
-  { id: "vc", label: "Venture Capital", hint: "a16z, Sequoia, Benchmark, etc." },
-  { id: "pe-hf", label: "Private Equity / Hedge Funds", hint: "Blackstone, Citadel, Two Sigma, etc." },
-  { id: "ib", label: "Investment Banking", hint: "Goldman Sachs, Morgan Stanley, JPM, etc." },
-  { id: "yc", label: "YC / Early-stage Startups", hint: "Y Combinator companies, seed-stage" },
+  { id: "tech", label: "Tech", hint: "Meta, Apple, Amazon, Netflix, Google, Microsoft, Stripe, OpenAI, Anthropic, SpaceX, YC startups, etc." },
+  { id: "consulting", label: "Consulting", hint: "McKinsey, BCG, Bain, Deloitte, Accenture, Oliver Wyman, etc." },
+  { id: "finance", label: "Finance", hint: "Goldman Sachs, Morgan Stanley, JPM, Blackstone, Citadel, Two Sigma, etc." },
+  { id: "investing", label: "VC & Growth", hint: "a16z, Sequoia, Benchmark, etc." },
 ] as const;
 
 function Index() {
@@ -95,7 +93,7 @@ function Index() {
           Get matched with roles worth your time
         </h1>
         <p className="text-muted-foreground mt-4 max-w-xl mx-auto">
-          Submit once. We'll only reach out when a specific opportunity is a strong match for your background — no spam, no generic recruiter outreach. Takes about 5 minutes.
+          Submit once. We'll only reach out when a specific opportunity is a strong match for your background.
         </p>
       </header>
 
@@ -122,7 +120,7 @@ function Index() {
         <Card className="p-6 sm:p-8" style={{ boxShadow: "var(--shadow-card)" }}>
           <SectionHeader step={2} title="Previous interviews" />
           <p className="text-sm text-muted-foreground mt-1">
-            Check any category where you've reached a <strong className="text-foreground">final round</strong> interview. You may be asked to verify the accuracy of this information later on.
+            Check any category where you've reached a <strong className="text-foreground">final round</strong>. You may be asked to verify later.
           </p>
           <div className="grid sm:grid-cols-2 gap-3 mt-5">
             {INTERVIEW_CATEGORIES.map((cat) => {
