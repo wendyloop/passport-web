@@ -89,13 +89,13 @@ function Index() {
       <header className="px-4 pt-16 pb-12 text-center">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium mb-4">
           <Sparkles className="w-3.5 h-3.5" />
-          Candidate Application
+          Join the network
         </div>
         <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight max-w-2xl mx-auto leading-tight">
-          Tell us about your experience
+          Get matched with roles worth your time
         </h1>
         <p className="text-muted-foreground mt-4 max-w-xl mx-auto">
-          Share your interview track record, resume, and a 1-minute intro video. Takes about 5 minutes.
+          Submit once. We'll only reach out when a specific opportunity is a strong match for your background — no spam, no generic recruiter outreach. Takes about 5 minutes.
         </p>
       </header>
 
