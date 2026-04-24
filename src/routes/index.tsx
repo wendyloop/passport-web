@@ -17,9 +17,21 @@ export const Route = createFileRoute("/")({
 });
 
 const INTERVIEW_CATEGORIES = [
-  { id: "tech", label: "Tech", hint: "Meta, Apple, Amazon, Netflix, Google, Microsoft, Stripe, OpenAI, Anthropic, SpaceX, YC startups, etc." },
-  { id: "consulting", label: "Consulting", hint: "McKinsey, BCG, Bain, Deloitte, Accenture, Oliver Wyman, etc." },
-  { id: "finance", label: "Finance", hint: "Goldman Sachs, Morgan Stanley, JPM, Blackstone, Citadel, Two Sigma, etc." },
+  {
+    id: "tech",
+    label: "Tech",
+    hint: "Meta, Apple, Amazon, Netflix, Google, Microsoft, Stripe, OpenAI, Anthropic, SpaceX, YC startups, etc.",
+  },
+  {
+    id: "consulting",
+    label: "Consulting",
+    hint: "McKinsey, BCG, Bain, Deloitte, Accenture, Oliver Wyman, etc.",
+  },
+  {
+    id: "finance",
+    label: "Finance",
+    hint: "Goldman Sachs, Morgan Stanley, JPM, Blackstone, Citadel, Two Sigma, etc.",
+  },
   { id: "investing", label: "VC & Growth", hint: "a16z, Sequoia, Benchmark, etc." },
 ] as const;
 
@@ -62,9 +74,15 @@ function Index() {
 
   if (submitted) {
     return (
-      <main className="min-h-screen flex items-center justify-center px-4" style={{ background: "var(--gradient-subtle)" }}>
+      <main
+        className="min-h-screen flex items-center justify-center px-4"
+        style={{ background: "var(--gradient-subtle)" }}
+      >
         <Card className="max-w-md p-8 text-center" style={{ boxShadow: "var(--shadow-elegant)" }}>
-          <div className="w-14 h-14 rounded-full mx-auto flex items-center justify-center mb-4" style={{ background: "var(--gradient-primary)" }}>
+          <div
+            className="w-14 h-14 rounded-full mx-auto flex items-center justify-center mb-4"
+            style={{ background: "var(--gradient-primary)" }}
+          >
             <CheckCircle2 className="w-7 h-7 text-primary-foreground" />
           </div>
           <h1 className="text-2xl font-semibold tracking-tight">Application received</h1>
@@ -93,7 +111,8 @@ function Index() {
           Get matched with roles worth your time
         </h1>
         <p className="text-muted-foreground mt-4 max-w-xl mx-auto">
-          Submit once. We'll only reach out when a specific opportunity is a strong match for your background.
+          Submit once. We'll only reach out when a specific opportunity is a strong match for your
+          background.
         </p>
       </header>
 
@@ -103,14 +122,29 @@ function Index() {
           <SectionHeader step={1} title="Basic info" />
           <div className="grid sm:grid-cols-2 gap-4 mt-5">
             <Field label="Full name" required>
-              <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Jane Doe" required />
+              <Input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Jane Doe"
+                required
+              />
             </Field>
             <Field label="Email" required>
-              <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="jane@example.com" required />
+              <Input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="jane@example.com"
+                required
+              />
             </Field>
             <div className="sm:col-span-2">
               <Field label="LinkedIn (optional)">
-                <Input value={linkedin} onChange={(e) => setLinkedin(e.target.value)} placeholder="linkedin.com/in/janedoe" />
+                <Input
+                  value={linkedin}
+                  onChange={(e) => setLinkedin(e.target.value)}
+                  placeholder="linkedin.com/in/janedoe"
+                />
               </Field>
             </div>
           </div>
@@ -120,7 +154,9 @@ function Index() {
         <Card className="p-6 sm:p-8" style={{ boxShadow: "var(--shadow-card)" }}>
           <SectionHeader step={2} title="Previous interviews" />
           <p className="text-sm text-muted-foreground mt-1">
-            Check any category where you've reached a <strong className="text-foreground">final round</strong>. You may be asked to verify later.
+            Check any category where you've reached a{" "}
+            <strong className="text-foreground">final round</strong>. You may be asked to verify
+            later.
           </p>
           <div className="grid sm:grid-cols-2 gap-3 mt-5">
             {INTERVIEW_CATEGORIES.map((cat) => {
@@ -129,7 +165,9 @@ function Index() {
                 <label
                   key={cat.id}
                   className={`flex items-start gap-3 p-3 rounded-lg border-2 cursor-pointer transition-colors ${
-                    checked ? "border-primary bg-primary/5" : "border-border hover:border-primary/40"
+                    checked
+                      ? "border-primary bg-primary/5"
+                      : "border-border hover:border-primary/40"
                   }`}
                 >
                   <Checkbox
@@ -163,7 +201,9 @@ function Index() {
         {/* Resume */}
         <Card className="p-6 sm:p-8" style={{ boxShadow: "var(--shadow-card)" }}>
           <SectionHeader step={3} title="Resume" />
-          <p className="text-sm text-muted-foreground mt-1 mb-5">PDF or Word document, up to 10MB.</p>
+          <p className="text-sm text-muted-foreground mt-1 mb-5">
+            PDF or Word document, up to 10MB.
+          </p>
           <ResumeUpload value={resume} onChange={setResume} />
         </Card>
 
@@ -173,26 +213,27 @@ function Index() {
           <p className="text-sm text-muted-foreground mt-1 mb-5">
             Cover three things: <strong className="text-foreground">your name</strong>,{" "}
             <strong className="text-foreground">your background</strong>, and{" "}
-            <strong className="text-foreground">one project you want to highlight</strong>. Record on your
-            phone or directly here.
+            <strong className="text-foreground">one project you want to highlight</strong>. Record
+            on your phone or directly here.
           </p>
           <VideoCapture value={video} onChange={setVideo} />
         </Card>
 
         <div className="pt-2 space-y-4">
           <div className="rounded-lg border border-border bg-muted/30 p-4 text-sm text-muted-foreground">
-            <strong className="text-foreground">What happens next:</strong> We review every submission and reach out directly when a specific role matches your background.
+            <strong className="text-foreground">What happens next:</strong> We review every
+            submission and reach out directly when a specific role matches your background.
           </div>
           <div className="flex justify-end">
-          <Button
-            type="submit"
-            size="lg"
-            disabled={submitting}
-            className="text-primary-foreground border-0 px-8"
-            style={{ background: "var(--gradient-primary)", boxShadow: "var(--shadow-elegant)" }}
-          >
-            {submitting ? "Submitting…" : "Submit application"}
-          </Button>
+            <Button
+              type="submit"
+              size="lg"
+              disabled={submitting}
+              className="text-primary-foreground border-0 px-8"
+              style={{ background: "var(--gradient-primary)", boxShadow: "var(--shadow-elegant)" }}
+            >
+              {submitting ? "Submitting…" : "Submit application"}
+            </Button>
           </div>
         </div>
       </form>

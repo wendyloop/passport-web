@@ -15,7 +15,11 @@ export function ResumeUpload({ value, onChange }: ResumeUploadProps) {
 
   function handleFile(file: File | undefined) {
     if (!file) return;
-    const okTypes = ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
+    const okTypes = [
+      "application/pdf",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ];
     if (!okTypes.includes(file.type) && !/\.(pdf|docx?|)$/i.test(file.name)) {
       setError("Please upload a PDF or Word document.");
       return;

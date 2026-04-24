@@ -79,7 +79,12 @@ export function VideoCapture({ value, onChange }: VideoCaptureProps) {
   function startRecording() {
     if (!streamRef.current) return;
     chunksRef.current = [];
-    const mimeCandidates = ["video/webm;codecs=vp9,opus", "video/webm;codecs=vp8,opus", "video/webm", "video/mp4"];
+    const mimeCandidates = [
+      "video/webm;codecs=vp9,opus",
+      "video/webm;codecs=vp8,opus",
+      "video/webm",
+      "video/mp4",
+    ];
     const mime = mimeCandidates.find((m) => MediaRecorder.isTypeSupported(m)) ?? "";
     const recorder = new MediaRecorder(streamRef.current, mime ? { mimeType: mime } : undefined);
     recorder.ondataavailable = (e) => {
@@ -145,7 +150,12 @@ export function VideoCapture({ value, onChange }: VideoCaptureProps) {
           <CheckCircle2 className="w-4 h-4" />
           Video ready ({(value.size / (1024 * 1024)).toFixed(1)} MB)
         </div>
-        <video src={previewUrl} controls playsInline className="w-full rounded-md bg-black aspect-video" />
+        <video
+          src={previewUrl}
+          controls
+          playsInline
+          className="w-full rounded-md bg-black aspect-video"
+        />
         <Button type="button" variant="ghost" size="sm" onClick={reset} className="mt-3">
           <RotateCcw className="w-4 h-4 mr-2" />
           Replace video
@@ -158,13 +168,24 @@ export function VideoCapture({ value, onChange }: VideoCaptureProps) {
     <Card className="p-4 bg-card border-2 border-dashed">
       {mode === "choose" && (
         <div className="grid sm:grid-cols-2 gap-3">
-          <Button type="button" variant="outline" onClick={startCamera} className="h-auto py-6 flex-col gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={startCamera}
+            className="h-auto py-6 flex-col gap-2"
+          >
             <Video className="w-6 h-6" />
             <span className="font-medium">Record in browser</span>
             <span className="text-xs text-muted-foreground">Use your webcam & mic</span>
           </Button>
           <label className="cursor-pointer">
-            <input type="file" accept="video/*" capture="user" className="sr-only" onChange={handleUpload} />
+            <input
+              type="file"
+              accept="video/*"
+              capture="user"
+              className="sr-only"
+              onChange={handleUpload}
+            />
             <div className="border border-input bg-background hover:bg-accent rounded-md h-full py-6 flex flex-col items-center justify-center gap-2">
               <Upload className="w-6 h-6" />
               <span className="font-medium text-sm">Upload from device</span>
@@ -177,7 +198,12 @@ export function VideoCapture({ value, onChange }: VideoCaptureProps) {
       {mode === "record" && (
         <div className="space-y-3">
           <div className="relative">
-            <video ref={videoRef} playsInline muted className="w-full rounded-md bg-black aspect-video" />
+            <video
+              ref={videoRef}
+              playsInline
+              muted
+              className="w-full rounded-md bg-black aspect-video"
+            />
             {recording && (
               <div className="absolute top-3 left-3 flex items-center gap-2 bg-destructive text-destructive-foreground px-3 py-1 rounded-full text-xs font-medium">
                 <span className="w-2 h-2 rounded-full bg-current animate-pulse" />
@@ -201,7 +227,9 @@ export function VideoCapture({ value, onChange }: VideoCaptureProps) {
               </Button>
             )}
           </div>
-          <p className="text-xs text-muted-foreground text-center">Aim for ~1 minute. Recording stops automatically at {MAX_SECONDS}s.</p>
+          <p className="text-xs text-muted-foreground text-center">
+            Aim for ~1 minute. Recording stops automatically at {MAX_SECONDS}s.
+          </p>
         </div>
       )}
 
