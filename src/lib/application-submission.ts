@@ -51,7 +51,7 @@ export async function submitApplication(input: SubmissionInput) {
   );
 
   if (error || !data) {
-    throw new Error(error?.message ?? "Could not create the application.");
+    throw new Error(await getFunctionErrorMessage(error, "Could not create the application."));
   }
 
   await uploadToSignedUrl(
@@ -75,7 +75,9 @@ export async function submitApplication(input: SubmissionInput) {
     });
 
   if (finalizeError || !finalized) {
-    throw new Error(finalizeError?.message ?? "Could not finalize the application.");
+    throw new Error(
+      await getFunctionErrorMessage(finalizeError, "Could not finalize the application."),
+    );
   }
 
   return finalized;
@@ -90,4 +92,41 @@ async function uploadToSignedUrl(bucket: string, path: string, token: string, fi
   if (error) {
     throw new Error(error.message);
   }
+}
+
+async function getFunctionErrorMessage(error: unknown, fallback: string) {
+  if (error && typeof error === "object" && "context" in error) {
+    const context = (error as { context?: unknown }).context;
+
+    if (context instanceof Response) {
+      try {
+        const payload = await context.clone().json();
+
+        if (payload && typeof payload === "object") {
+          if ("error" in payload && typeof payload.error === "string" && payload.error.trim()) {
+            return payload.error;
+          }
+
+          if (
+            "message" in payload &&
+            typeof payload.message === "string" &&
+            payload.message.trim()
+          ) {
+            return payload.message;
+          }
+        }
+      } catch {
+        const text = await context.text();
+        if (text.trim()) {
+          return text;
+        }
+      }
+    }
+  }
+
+  if (error instanceof Error && error.message.trim()) {
+    return error.message;
+  }
+
+  return fallback;
 }
