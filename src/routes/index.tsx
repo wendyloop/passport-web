@@ -9,6 +9,7 @@ import { Card } from "@/components/ui/card";
 import { Sparkles, CheckCircle2 } from "lucide-react";
 import { ResumeUpload } from "@/components/application/ResumeUpload";
 import { VideoCapture } from "@/components/application/VideoCapture";
+import { submitApplication } from "@/lib/application-submission";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -66,10 +67,31 @@ function Index() {
       return;
     }
     setSubmitting(true);
-    // No backend yet — simulate submission so users see end-to-end flow.
-    await new Promise((r) => setTimeout(r, 800));
-    setSubmitting(false);
-    setSubmitted(true);
+    try {
+      const result = await submitApplication({
+        name,
+        email,
+        linkedin,
+        interviewCategories: Object.entries(categories)
+          .filter(([, checked]) => checked)
+          .map(([category]) => category),
+        interviewDetails,
+        resume,
+        video,
+      });
+
+      if (result.parseStatus === "failed") {
+        toast.warning("Application saved, but resume parsing needs a retry in Supabase.");
+      }
+
+      setSubmitted(true);
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Something went wrong while submitting.";
+      toast.error(message);
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   if (submitted) {
@@ -202,7 +224,7 @@ function Index() {
         <Card className="p-6 sm:p-8" style={{ boxShadow: "var(--shadow-card)" }}>
           <SectionHeader step={3} title="Resume" />
           <p className="text-sm text-muted-foreground mt-1 mb-5">
-            PDF or Word document, up to 10MB.
+            PDF or DOCX document, up to 10MB.
           </p>
           <ResumeUpload value={resume} onChange={setResume} />
         </Card>

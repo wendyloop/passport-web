@@ -17,11 +17,10 @@ export function ResumeUpload({ value, onChange }: ResumeUploadProps) {
     if (!file) return;
     const okTypes = [
       "application/pdf",
-      "application/msword",
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     ];
-    if (!okTypes.includes(file.type) && !/\.(pdf|docx?|)$/i.test(file.name)) {
-      setError("Please upload a PDF or Word document.");
+    if (!okTypes.includes(file.type) && !/\.(pdf|docx)$/i.test(file.name)) {
+      setError("Please upload a PDF or DOCX file.");
       return;
     }
     if (file.size > 10 * 1024 * 1024) {
@@ -73,13 +72,13 @@ export function ResumeUpload({ value, onChange }: ResumeUploadProps) {
         <input
           ref={inputRef}
           type="file"
-          accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+          accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
           className="sr-only"
           onChange={(e) => handleFile(e.target.files?.[0])}
         />
         <Upload className="w-8 h-8 mx-auto text-muted-foreground mb-2" />
         <p className="text-sm font-medium">Click to upload or drag & drop</p>
-        <p className="text-xs text-muted-foreground mt-1">PDF or Word, up to 10MB</p>
+        <p className="text-xs text-muted-foreground mt-1">PDF or DOCX, up to 10MB</p>
       </Card>
       {error && <p className="text-sm text-destructive mt-2">{error}</p>}
     </>
