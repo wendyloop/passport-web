@@ -4,24 +4,9 @@ import tailwindcss from "@tailwindcss/vite";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
-function getBasePath() {
-  const repository = process.env.GITHUB_REPOSITORY;
-
-  if (!repository) {
-    return "/";
-  }
-
-  const [owner, repo] = repository.split("/");
-
-  if (!owner || !repo || repo === `${owner}.github.io`) {
-    return "/";
-  }
-
-  return `/${repo}/`;
-}
-
 export default defineConfig({
-  base: process.env.GITHUB_ACTIONS === "true" ? getBasePath() : "/",
+  // Relative asset URLs work for both a custom domain and the repo Pages URL.
+  base: "./",
   plugins: [
     tanstackRouter({
       target: "react",

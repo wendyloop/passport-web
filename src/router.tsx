@@ -1,6 +1,14 @@
 import { createRouter, useRouter } from "@tanstack/react-router";
 import { routeTree } from "./routeTree.gen";
 
+function getBasepath() {
+  if (typeof window === "undefined") {
+    return "/";
+  }
+
+  return window.location.pathname.startsWith("/passport-web/") ? "/passport-web" : "/";
+}
+
 function DefaultErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   const router = useRouter();
 
@@ -57,6 +65,7 @@ function DefaultErrorComponent({ error, reset }: { error: Error; reset: () => vo
 export const getRouter = () => {
   const router = createRouter({
     routeTree,
+    basepath: getBasepath(),
     context: {},
     scrollRestoration: true,
     defaultPreloadStaleTime: 0,
