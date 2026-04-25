@@ -88,6 +88,10 @@ Deno.serve(async (request) => {
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unable to create application.";
+    console.error("create-application failed", {
+      message,
+      error,
+    });
     return errorResponse(400, message);
   }
 });

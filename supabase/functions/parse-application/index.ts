@@ -37,12 +37,21 @@ Deno.serve(async (request) => {
       });
     } catch (error) {
       const message = error instanceof Error ? error.message : "Resume parsing failed.";
+      console.error("parse-application failed", {
+        applicationId,
+        message,
+        error,
+      });
       await markParseFailure(applicationId, message);
 
       return errorResponse(500, message);
     }
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unable to parse application.";
+    console.error("parse-application request failed", {
+      message,
+      error,
+    });
     return errorResponse(400, message);
   }
 });

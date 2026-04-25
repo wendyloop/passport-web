@@ -65,6 +65,11 @@ Deno.serve(async (request) => {
       });
     } catch (error) {
       const message = error instanceof Error ? error.message : "Resume parsing failed.";
+      console.error("finalize-application parse failed", {
+        applicationId,
+        message,
+        error,
+      });
       await markParseFailure(applicationId, message);
 
       return jsonResponse(200, {
@@ -75,6 +80,10 @@ Deno.serve(async (request) => {
     }
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unable to finalize application.";
+    console.error("finalize-application failed", {
+      message,
+      error,
+    });
     return errorResponse(400, message);
   }
 });
