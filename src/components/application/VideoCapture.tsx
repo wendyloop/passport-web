@@ -48,6 +48,16 @@ export function VideoCapture({ value, onChange }: VideoCaptureProps) {
     }
   }, [value]);
 
+  useEffect(() => {
+    if (mode !== "record" || !streamRef.current || !videoRef.current) {
+      return;
+    }
+
+    videoRef.current.srcObject = streamRef.current;
+    videoRef.current.muted = true;
+    void videoRef.current.play().catch(() => {});
+  }, [mode]);
+
   function stopStream() {
     streamRef.current?.getTracks().forEach((t) => t.stop());
     streamRef.current = null;
@@ -65,11 +75,6 @@ export function VideoCapture({ value, onChange }: VideoCaptureProps) {
         audio: true,
       });
       streamRef.current = stream;
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        videoRef.current.muted = true;
-        await videoRef.current.play().catch(() => {});
-      }
       setMode("record");
     } catch (e) {
       setError("Could not access camera/mic. Check browser permissions or upload a file instead.");
@@ -202,7 +207,8 @@ export function VideoCapture({ value, onChange }: VideoCaptureProps) {
               ref={videoRef}
               playsInline
               muted
-              className="w-full rounded-md bg-black aspect-video"
+              autoPlay
+              className="w-full rounded-md bg-black aspect-video object-cover"
             />
             {recording && (
               <div className="absolute top-3 left-3 flex items-center gap-2 bg-destructive text-destructive-foreground px-3 py-1 rounded-full text-xs font-medium">
