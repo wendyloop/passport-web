@@ -11,7 +11,6 @@ import { ResumeUpload } from "@/components/application/ResumeUpload";
 import { VideoCapture } from "@/components/application/VideoCapture";
 import { submitApplication } from "@/lib/application-submission";
 import { toast } from "sonner";
-import { Toaster } from "@/components/ui/sonner";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -54,8 +53,8 @@ function Index() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!name.trim() || !email.trim()) {
-      toast.error("Please add your name and email.");
+    if (!name.trim() || !email.trim() || !linkedin.trim()) {
+      toast.error("Please add your name, email, and LinkedIn.");
       return;
     }
     if (!resume) {
@@ -121,8 +120,6 @@ function Index() {
 
   return (
     <main className="min-h-screen pb-20" style={{ background: "var(--gradient-subtle)" }}>
-      <Toaster richColors position="top-center" />
-
       {/* Hero */}
       <header className="px-4 pt-16 pb-12 text-center">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium mb-4">
@@ -161,11 +158,12 @@ function Index() {
               />
             </Field>
             <div className="sm:col-span-2">
-              <Field label="LinkedIn (optional)">
+              <Field label="LinkedIn" required>
                 <Input
                   value={linkedin}
                   onChange={(e) => setLinkedin(e.target.value)}
                   placeholder="linkedin.com/in/janedoe"
+                  required
                 />
               </Field>
             </div>

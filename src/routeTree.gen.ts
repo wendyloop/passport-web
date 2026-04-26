@@ -9,38 +9,121 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as PortalRouteImport } from './routes/portal'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PortalIndexRouteImport } from './routes/portal.index'
+import { Route as PortalLoginRouteImport } from './routes/portal.login'
+import { Route as PortalEmployersRouteImport } from './routes/portal.employers'
+import { Route as PortalAdminRouteImport } from './routes/portal.admin'
+import { Route as PortalCandidatesApplicationIdRouteImport } from './routes/portal.candidates.$applicationId'
 
+const PortalRoute = PortalRouteImport.update({
+  id: '/portal',
+  path: '/portal',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PortalIndexRoute = PortalIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => PortalRoute,
+} as any)
+const PortalLoginRoute = PortalLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => PortalRoute,
+} as any)
+const PortalEmployersRoute = PortalEmployersRouteImport.update({
+  id: '/employers',
+  path: '/employers',
+  getParentRoute: () => PortalRoute,
+} as any)
+const PortalAdminRoute = PortalAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => PortalRoute,
+} as any)
+const PortalCandidatesApplicationIdRoute =
+  PortalCandidatesApplicationIdRouteImport.update({
+    id: '/candidates/$applicationId',
+    path: '/candidates/$applicationId',
+    getParentRoute: () => PortalRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/portal': typeof PortalRouteWithChildren
+  '/portal/admin': typeof PortalAdminRoute
+  '/portal/employers': typeof PortalEmployersRoute
+  '/portal/login': typeof PortalLoginRoute
+  '/portal/': typeof PortalIndexRoute
+  '/portal/candidates/$applicationId': typeof PortalCandidatesApplicationIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/portal/admin': typeof PortalAdminRoute
+  '/portal/employers': typeof PortalEmployersRoute
+  '/portal/login': typeof PortalLoginRoute
+  '/portal': typeof PortalIndexRoute
+  '/portal/candidates/$applicationId': typeof PortalCandidatesApplicationIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/portal': typeof PortalRouteWithChildren
+  '/portal/admin': typeof PortalAdminRoute
+  '/portal/employers': typeof PortalEmployersRoute
+  '/portal/login': typeof PortalLoginRoute
+  '/portal/': typeof PortalIndexRoute
+  '/portal/candidates/$applicationId': typeof PortalCandidatesApplicationIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/portal'
+    | '/portal/admin'
+    | '/portal/employers'
+    | '/portal/login'
+    | '/portal/'
+    | '/portal/candidates/$applicationId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/portal/admin'
+    | '/portal/employers'
+    | '/portal/login'
+    | '/portal'
+    | '/portal/candidates/$applicationId'
+  id:
+    | '__root__'
+    | '/'
+    | '/portal'
+    | '/portal/admin'
+    | '/portal/employers'
+    | '/portal/login'
+    | '/portal/'
+    | '/portal/candidates/$applicationId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  PortalRoute: typeof PortalRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/portal': {
+      id: '/portal'
+      path: '/portal'
+      fullPath: '/portal'
+      preLoaderRoute: typeof PortalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +131,66 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/portal/': {
+      id: '/portal/'
+      path: '/'
+      fullPath: '/portal/'
+      preLoaderRoute: typeof PortalIndexRouteImport
+      parentRoute: typeof PortalRoute
+    }
+    '/portal/login': {
+      id: '/portal/login'
+      path: '/login'
+      fullPath: '/portal/login'
+      preLoaderRoute: typeof PortalLoginRouteImport
+      parentRoute: typeof PortalRoute
+    }
+    '/portal/employers': {
+      id: '/portal/employers'
+      path: '/employers'
+      fullPath: '/portal/employers'
+      preLoaderRoute: typeof PortalEmployersRouteImport
+      parentRoute: typeof PortalRoute
+    }
+    '/portal/admin': {
+      id: '/portal/admin'
+      path: '/admin'
+      fullPath: '/portal/admin'
+      preLoaderRoute: typeof PortalAdminRouteImport
+      parentRoute: typeof PortalRoute
+    }
+    '/portal/candidates/$applicationId': {
+      id: '/portal/candidates/$applicationId'
+      path: '/candidates/$applicationId'
+      fullPath: '/portal/candidates/$applicationId'
+      preLoaderRoute: typeof PortalCandidatesApplicationIdRouteImport
+      parentRoute: typeof PortalRoute
+    }
   }
 }
 
+interface PortalRouteChildren {
+  PortalAdminRoute: typeof PortalAdminRoute
+  PortalEmployersRoute: typeof PortalEmployersRoute
+  PortalLoginRoute: typeof PortalLoginRoute
+  PortalIndexRoute: typeof PortalIndexRoute
+  PortalCandidatesApplicationIdRoute: typeof PortalCandidatesApplicationIdRoute
+}
+
+const PortalRouteChildren: PortalRouteChildren = {
+  PortalAdminRoute: PortalAdminRoute,
+  PortalEmployersRoute: PortalEmployersRoute,
+  PortalLoginRoute: PortalLoginRoute,
+  PortalIndexRoute: PortalIndexRoute,
+  PortalCandidatesApplicationIdRoute: PortalCandidatesApplicationIdRoute,
+}
+
+const PortalRouteWithChildren =
+  PortalRoute._addFileChildren(PortalRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  PortalRoute: PortalRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
