@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Redirecting…</title>
+    <script>
+      (function () {
+        var pathname = window.location.pathname;
+        var search = window.location.search || "";
+        var hash = window.location.hash || "";
+        var isRepoPages = pathname.startsWith("/passport-web/");
+        var basepath = isRepoPages ? "/passport-web" : "";
+        var targetPath = pathname;
+        var redirectUrl =
+          window.location.origin +
+          basepath +
+          "/?p=" +
+          encodeURIComponent(targetPath) +
+          search +
+          hash;
+
+        window.location.replace(redirectUrl);
+      })();
+    </script>
+  </head>
+  <body></body>
+</html>
