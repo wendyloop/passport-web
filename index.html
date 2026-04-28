@@ -29,25 +29,6 @@
       name="twitter:image"
       content="https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/7dae3974-5d4b-46d7-a829-ef51b874fbdf/id-preview-79f9a34c--045a0b07-42ab-4bee-aef3-1221be080ddd.lovable.app-1776985211319.png"
     />
-    <script>
-      (function () {
-        var redirect = window.location.search.match(/[?&]p=([^&]+)/);
-        if (!redirect) return;
-
-        var decodedPath = decodeURIComponent(redirect[1]);
-        var cleanedSearch = window.location.search
-          .replace(/[?&]p=[^&]+/, "")
-          .replace(/^&/, "?")
-          .replace(/\?$/, "");
-        var nextUrl =
-          window.location.origin +
-          decodedPath +
-          cleanedSearch +
-          window.location.hash;
-
-        window.history.replaceState(null, "", nextUrl);
-      })();
-    </script>
   </head>
   <body>
     <div id="app"></div>

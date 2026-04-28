@@ -2,8 +2,11 @@ import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider } from "@tanstack/react-router";
 import { AppProviders } from "@/components/providers/AppProviders";
+import { restoreRedirectedPath } from "./lib/basepath";
 import { getRouter } from "./router";
 import "./styles.css";
+
+restoreRedirectedPath();
 
 const router = getRouter();
 
