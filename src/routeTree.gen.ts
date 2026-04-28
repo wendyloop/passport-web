@@ -9,14 +9,25 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TalentRouteImport } from './routes/talent'
 import { Route as PortalRouteImport } from './routes/portal'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TalentIndexRouteImport } from './routes/talent.index'
 import { Route as PortalIndexRouteImport } from './routes/portal.index'
+import { Route as TalentSearchRouteImport } from './routes/talent.search'
+import { Route as TalentInsightsRouteImport } from './routes/talent.insights'
+import { Route as TalentImportRouteImport } from './routes/talent.import'
 import { Route as PortalLoginRouteImport } from './routes/portal.login'
 import { Route as PortalEmployersRouteImport } from './routes/portal.employers'
 import { Route as PortalAdminRouteImport } from './routes/portal.admin'
+import { Route as TalentCandidatesProfileIdRouteImport } from './routes/talent.candidates.$profileId'
 import { Route as PortalCandidatesApplicationIdRouteImport } from './routes/portal.candidates.$applicationId'
 
+const TalentRoute = TalentRouteImport.update({
+  id: '/talent',
+  path: '/talent',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PortalRoute = PortalRouteImport.update({
   id: '/portal',
   path: '/portal',
@@ -27,10 +38,30 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TalentIndexRoute = TalentIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => TalentRoute,
+} as any)
 const PortalIndexRoute = PortalIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => PortalRoute,
+} as any)
+const TalentSearchRoute = TalentSearchRouteImport.update({
+  id: '/search',
+  path: '/search',
+  getParentRoute: () => TalentRoute,
+} as any)
+const TalentInsightsRoute = TalentInsightsRouteImport.update({
+  id: '/insights',
+  path: '/insights',
+  getParentRoute: () => TalentRoute,
+} as any)
+const TalentImportRoute = TalentImportRouteImport.update({
+  id: '/import',
+  path: '/import',
+  getParentRoute: () => TalentRoute,
 } as any)
 const PortalLoginRoute = PortalLoginRouteImport.update({
   id: '/login',
@@ -47,6 +78,12 @@ const PortalAdminRoute = PortalAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => PortalRoute,
 } as any)
+const TalentCandidatesProfileIdRoute =
+  TalentCandidatesProfileIdRouteImport.update({
+    id: '/candidates/$profileId',
+    path: '/candidates/$profileId',
+    getParentRoute: () => TalentRoute,
+  } as any)
 const PortalCandidatesApplicationIdRoute =
   PortalCandidatesApplicationIdRouteImport.update({
     id: '/candidates/$applicationId',
@@ -57,66 +94,108 @@ const PortalCandidatesApplicationIdRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/portal': typeof PortalRouteWithChildren
+  '/talent': typeof TalentRouteWithChildren
   '/portal/admin': typeof PortalAdminRoute
   '/portal/employers': typeof PortalEmployersRoute
   '/portal/login': typeof PortalLoginRoute
+  '/talent/import': typeof TalentImportRoute
+  '/talent/insights': typeof TalentInsightsRoute
+  '/talent/search': typeof TalentSearchRoute
   '/portal/': typeof PortalIndexRoute
+  '/talent/': typeof TalentIndexRoute
   '/portal/candidates/$applicationId': typeof PortalCandidatesApplicationIdRoute
+  '/talent/candidates/$profileId': typeof TalentCandidatesProfileIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/portal/admin': typeof PortalAdminRoute
   '/portal/employers': typeof PortalEmployersRoute
   '/portal/login': typeof PortalLoginRoute
+  '/talent/import': typeof TalentImportRoute
+  '/talent/insights': typeof TalentInsightsRoute
+  '/talent/search': typeof TalentSearchRoute
   '/portal': typeof PortalIndexRoute
+  '/talent': typeof TalentIndexRoute
   '/portal/candidates/$applicationId': typeof PortalCandidatesApplicationIdRoute
+  '/talent/candidates/$profileId': typeof TalentCandidatesProfileIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/portal': typeof PortalRouteWithChildren
+  '/talent': typeof TalentRouteWithChildren
   '/portal/admin': typeof PortalAdminRoute
   '/portal/employers': typeof PortalEmployersRoute
   '/portal/login': typeof PortalLoginRoute
+  '/talent/import': typeof TalentImportRoute
+  '/talent/insights': typeof TalentInsightsRoute
+  '/talent/search': typeof TalentSearchRoute
   '/portal/': typeof PortalIndexRoute
+  '/talent/': typeof TalentIndexRoute
   '/portal/candidates/$applicationId': typeof PortalCandidatesApplicationIdRoute
+  '/talent/candidates/$profileId': typeof TalentCandidatesProfileIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/portal'
+    | '/talent'
     | '/portal/admin'
     | '/portal/employers'
     | '/portal/login'
+    | '/talent/import'
+    | '/talent/insights'
+    | '/talent/search'
     | '/portal/'
+    | '/talent/'
     | '/portal/candidates/$applicationId'
+    | '/talent/candidates/$profileId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/portal/admin'
     | '/portal/employers'
     | '/portal/login'
+    | '/talent/import'
+    | '/talent/insights'
+    | '/talent/search'
     | '/portal'
+    | '/talent'
     | '/portal/candidates/$applicationId'
+    | '/talent/candidates/$profileId'
   id:
     | '__root__'
     | '/'
     | '/portal'
+    | '/talent'
     | '/portal/admin'
     | '/portal/employers'
     | '/portal/login'
+    | '/talent/import'
+    | '/talent/insights'
+    | '/talent/search'
     | '/portal/'
+    | '/talent/'
     | '/portal/candidates/$applicationId'
+    | '/talent/candidates/$profileId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   PortalRoute: typeof PortalRouteWithChildren
+  TalentRoute: typeof TalentRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/talent': {
+      id: '/talent'
+      path: '/talent'
+      fullPath: '/talent'
+      preLoaderRoute: typeof TalentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/portal': {
       id: '/portal'
       path: '/portal'
@@ -131,12 +210,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/talent/': {
+      id: '/talent/'
+      path: '/'
+      fullPath: '/talent/'
+      preLoaderRoute: typeof TalentIndexRouteImport
+      parentRoute: typeof TalentRoute
+    }
     '/portal/': {
       id: '/portal/'
       path: '/'
       fullPath: '/portal/'
       preLoaderRoute: typeof PortalIndexRouteImport
       parentRoute: typeof PortalRoute
+    }
+    '/talent/search': {
+      id: '/talent/search'
+      path: '/search'
+      fullPath: '/talent/search'
+      preLoaderRoute: typeof TalentSearchRouteImport
+      parentRoute: typeof TalentRoute
+    }
+    '/talent/insights': {
+      id: '/talent/insights'
+      path: '/insights'
+      fullPath: '/talent/insights'
+      preLoaderRoute: typeof TalentInsightsRouteImport
+      parentRoute: typeof TalentRoute
+    }
+    '/talent/import': {
+      id: '/talent/import'
+      path: '/import'
+      fullPath: '/talent/import'
+      preLoaderRoute: typeof TalentImportRouteImport
+      parentRoute: typeof TalentRoute
     }
     '/portal/login': {
       id: '/portal/login'
@@ -158,6 +265,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/portal/admin'
       preLoaderRoute: typeof PortalAdminRouteImport
       parentRoute: typeof PortalRoute
+    }
+    '/talent/candidates/$profileId': {
+      id: '/talent/candidates/$profileId'
+      path: '/candidates/$profileId'
+      fullPath: '/talent/candidates/$profileId'
+      preLoaderRoute: typeof TalentCandidatesProfileIdRouteImport
+      parentRoute: typeof TalentRoute
     }
     '/portal/candidates/$applicationId': {
       id: '/portal/candidates/$applicationId'
@@ -188,9 +302,29 @@ const PortalRouteChildren: PortalRouteChildren = {
 const PortalRouteWithChildren =
   PortalRoute._addFileChildren(PortalRouteChildren)
 
+interface TalentRouteChildren {
+  TalentImportRoute: typeof TalentImportRoute
+  TalentInsightsRoute: typeof TalentInsightsRoute
+  TalentSearchRoute: typeof TalentSearchRoute
+  TalentIndexRoute: typeof TalentIndexRoute
+  TalentCandidatesProfileIdRoute: typeof TalentCandidatesProfileIdRoute
+}
+
+const TalentRouteChildren: TalentRouteChildren = {
+  TalentImportRoute: TalentImportRoute,
+  TalentInsightsRoute: TalentInsightsRoute,
+  TalentSearchRoute: TalentSearchRoute,
+  TalentIndexRoute: TalentIndexRoute,
+  TalentCandidatesProfileIdRoute: TalentCandidatesProfileIdRoute,
+}
+
+const TalentRouteWithChildren =
+  TalentRoute._addFileChildren(TalentRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   PortalRoute: PortalRouteWithChildren,
+  TalentRoute: TalentRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
