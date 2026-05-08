@@ -17,19 +17,19 @@ export function TalentFrame({
   const { profile, role, signOut } = usePortalAuth();
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(95,163,255,0.18),_transparent_35%),linear-gradient(180deg,_rgba(7,12,20,1),_rgba(12,17,24,1))] text-foreground">
+    <main className="font-public-sans min-h-screen bg-background text-foreground">
       <div className="mx-auto flex min-h-screen max-w-7xl gap-6 px-4 py-6 lg:px-6">
         <aside className="hidden w-72 shrink-0 lg:block">
-          <Card className="sticky top-6 overflow-hidden border-border/50 bg-background/60 p-5 shadow-2xl backdrop-blur">
+          <Card className="sticky top-6 overflow-hidden border-border p-5">
             <div className="flex items-start gap-3">
-              <div className="rounded-2xl bg-primary/15 p-3 text-primary">
+              <div className="rounded-2xl bg-accent p-3 text-primary">
                 <Brain className="h-5 w-5" />
               </div>
               <div>
-                <p className="text-xs uppercase tracking-[0.28em] text-muted-foreground">
+                <p className="font-public-mono text-xs uppercase tracking-[0.28em] text-muted-foreground">
                   Hidden workspace
                 </p>
-                <h1 className="mt-2 text-xl font-semibold tracking-tight">Talent GPT</h1>
+                <h1 className="mt-2 text-xl tracking-tight">Talent GPT</h1>
               </div>
             </div>
 
@@ -67,7 +67,7 @@ export function TalentFrame({
               />
             </nav>
 
-            <div className="mt-8 rounded-2xl border border-border/50 bg-muted/25 p-4">
+            <div className="mt-8 rounded-2xl border border-border bg-muted/35 p-4">
               <p className="text-sm font-medium">
                 {profile?.full_name || profile?.email || "Portal user"}
               </p>
@@ -89,11 +89,11 @@ export function TalentFrame({
         </aside>
 
         <div className="min-w-0 flex-1 space-y-6">
-          <Card className="border-border/60 bg-background/50 p-6 shadow-2xl backdrop-blur">
-            <p className="text-xs uppercase tracking-[0.32em] text-primary/80">
+          <Card className="border-border p-6">
+            <p className="font-public-mono text-xs uppercase tracking-[0.32em] text-primary/80">
               Private talent graph
             </p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-tight">{title}</h2>
+            <h2 className="mt-3 text-3xl tracking-tight">{title}</h2>
             <p className="mt-3 max-w-3xl text-sm text-muted-foreground">{subtitle}</p>
           </Card>
           {children}

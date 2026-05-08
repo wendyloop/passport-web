@@ -18,12 +18,14 @@ export function PortalFrame({
   const { role, profile, signOut } = usePortalAuth();
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(214,255,94,0.18),_transparent_30%),linear-gradient(180deg,_rgba(11,10,20,1),_rgba(24,20,43,1))] text-foreground">
+    <main className="font-public-sans min-h-screen bg-background text-foreground">
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
         <div className="mb-8 flex items-start justify-between gap-4">
           <div>
-            <p className="text-xs uppercase tracking-[0.28em] text-primary/80">Passport Portal</p>
-            {title ? <h1 className="mt-3 text-3xl font-semibold tracking-tight">{title}</h1> : null}
+            <p className="font-public-mono text-xs uppercase tracking-[0.28em] text-primary/80">
+              Passport Portal
+            </p>
+            {title ? <h1 className="mt-3 text-3xl tracking-tight">{title}</h1> : null}
             {subtitle ? (
               <p className="mt-2 max-w-3xl text-sm text-muted-foreground">{subtitle}</p>
             ) : null}
@@ -71,7 +73,7 @@ export function PortalFrame({
 
 export function PortalLoadingCard({ label = "Loading portal…" }: { label?: string }) {
   return (
-    <Card className="mx-auto max-w-xl border-border/60 bg-background/60 p-8 text-center shadow-2xl backdrop-blur">
+    <Card className="mx-auto max-w-xl border-border p-8 text-center">
       <p className="text-sm text-muted-foreground">{label}</p>
     </Card>
   );
@@ -81,8 +83,8 @@ export function PortalAccessDenied({ title, message }: { title: string; message:
   const { signOut } = usePortalAuth();
 
   return (
-    <Card className="mx-auto max-w-xl border-border/60 bg-background/60 p-8 shadow-2xl backdrop-blur">
-      <h2 className="text-2xl font-semibold tracking-tight">{title}</h2>
+    <Card className="mx-auto max-w-xl border-border p-8">
+      <h2 className="text-2xl tracking-tight">{title}</h2>
       <p className="mt-3 text-sm text-muted-foreground">{message}</p>
       <div className="mt-6">
         <Button
