@@ -1,3 +1,8 @@
+/*
+ * Paused hidden workspace.
+ * Preserved for future reuse, but currently unregistered while the product is
+ * focused on the public referral experience.
+ */
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";

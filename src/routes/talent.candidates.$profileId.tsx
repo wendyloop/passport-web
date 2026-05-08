@@ -1,3 +1,8 @@
+/*
+ * Paused hidden workspace.
+ * Preserved for future reuse, but currently unregistered while the product is
+ * focused on the public referral experience.
+ */
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { Linkedin } from "lucide-react";

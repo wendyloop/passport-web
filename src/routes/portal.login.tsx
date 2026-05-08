@@ -1,3 +1,8 @@
+/*
+ * Paused hidden workspace.
+ * Preserved for future reuse, but currently unregistered while the product is
+ * focused on the public referral experience.
+ */
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";

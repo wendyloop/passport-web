@@ -1,3 +1,8 @@
+/*
+ * Paused hidden workspace.
+ * Preserved for future reuse, but currently unregistered after the site was
+ * repurposed around the public referral flow.
+ */
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { PortalLoadingCard } from "@/components/portal/PortalFrame";

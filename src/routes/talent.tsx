@@ -1,3 +1,9 @@
+/*
+ * Paused hidden workspace.
+ * The product shifted to the public referral site, so /talent routes are
+ * intentionally unregistered from the active route tree for now.
+ * Keep this file for future reuse if the app returns to PeopleGPT-style tooling.
+ */
 import { Outlet, createFileRoute } from "@tanstack/react-router";
 import { TalentFrame } from "@/components/talent/TalentFrame";
 
