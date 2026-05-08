@@ -77,19 +77,21 @@ const audienceColumns = [
 
 function Index() {
   return (
-    <main className="min-h-screen bg-[#fbf9f4] text-[#171a22]">
+    <main className="font-public-sans min-h-screen bg-[#fbf9f4] text-[#171a22]">
       <section className="px-4 pb-16 pt-12 sm:px-6 lg:px-8 lg:pb-24 lg:pt-16">
         <div className="mx-auto max-w-5xl text-center">
-          <div className="inline-flex items-center gap-3 text-[2rem] font-semibold tracking-tight sm:text-[2.15rem]">
-            <span className="h-3.5 w-3.5 rounded-full bg-[#22a56a]" />
-            <span>Passport</span>
+          <div className="flex flex-col items-center">
+            <div className="font-public-display inline-flex items-center gap-3 text-[2rem] tracking-tight sm:text-[2.15rem]">
+              <span className="h-3.5 w-3.5 rounded-full bg-[#22a56a]" />
+              <span className="font-bold">Passport</span>
+            </div>
+
+            <div className="font-public-mono mt-4 inline-flex rounded-full border border-[#dde3e8] bg-white px-5 py-2 text-[11px] uppercase tracking-[0.32em] text-[#667084] sm:text-xs">
+              The peer referral network for tech
+            </div>
           </div>
 
-          <div className="mt-9 inline-flex rounded-full border border-[#dde3e8] bg-white px-5 py-2 text-[11px] uppercase tracking-[0.32em] text-[#667084] sm:text-xs">
-            The peer referral network for tech
-          </div>
-
-          <h1 className="mx-auto mt-10 max-w-4xl text-5xl font-semibold leading-[0.95] tracking-tight sm:text-7xl">
+          <h1 className="font-public-display mx-auto mt-10 max-w-4xl text-5xl leading-[0.95] tracking-tight sm:text-7xl">
             Every great hire
             <span className="mt-1 block text-[#22a56a]">starts with a name</span>
             <span className="mt-1 block">someone trusts</span>
@@ -117,7 +119,7 @@ function Index() {
             />
           </div>
 
-          <p className="mt-12 text-sm uppercase tracking-[0.3em] text-[#667084]">
+          <p className="font-public-mono mt-12 text-sm uppercase tracking-[0.3em] text-[#667084]">
             Built for YC founders and the candidates they vouch for
           </p>
         </div>
@@ -125,10 +127,10 @@ function Index() {
 
       <section className="px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
         <div className="mx-auto max-w-5xl">
-          <p className="text-center text-xs uppercase tracking-[0.32em] text-[#22a56a]">
+          <p className="font-public-mono text-center text-xs uppercase tracking-[0.32em] text-[#22a56a]">
             How it works
           </p>
-          <h2 className="mt-4 text-center text-4xl font-semibold tracking-tight sm:text-5xl">
+          <h2 className="font-public-display mt-4 text-center text-4xl tracking-tight sm:text-5xl">
             Three steps to a better hire
           </h2>
 
@@ -138,9 +140,9 @@ function Index() {
                 key={item.step}
                 className="grid gap-6 py-10 md:grid-cols-[88px,1fr] md:items-start md:py-12"
               >
-                <p className="text-xl font-semibold text-[#22a56a]">{item.step}</p>
+                <p className="font-public-mono text-xl text-[#22a56a]">{item.step}</p>
                 <div>
-                  <h3 className="text-3xl font-semibold tracking-tight sm:text-[2.15rem]">
+                  <h3 className="font-public-display text-3xl tracking-tight sm:text-[2.15rem]">
                     {item.title}
                   </h3>
                   <p className="mt-4 max-w-3xl text-lg leading-8 text-[#697386]">
@@ -155,17 +157,19 @@ function Index() {
 
       <section className="px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
         <div className="mx-auto max-w-6xl">
-          <p className="text-center text-xs uppercase tracking-[0.32em] text-[#22a56a]">
+          <p className="font-public-mono text-center text-xs uppercase tracking-[0.32em] text-[#22a56a]">
             Two sides, one network
           </p>
-          <h2 className="mx-auto mt-4 max-w-4xl text-center text-4xl font-semibold tracking-tight sm:text-5xl">
+          <h2 className="font-public-display mx-auto mt-4 max-w-4xl text-center text-4xl tracking-tight sm:text-5xl">
             Built for founders and candidates alike
           </h2>
 
           <div className="mt-16 grid gap-12 lg:grid-cols-2">
             {audienceColumns.map((column) => (
               <div key={column.label}>
-                <p className="text-sm uppercase tracking-[0.28em] text-[#667084]">{column.label}</p>
+                <p className="font-public-mono text-sm uppercase tracking-[0.28em] text-[#667084]">
+                  {column.label}
+                </p>
                 <div className="mt-6 space-y-6">
                   {column.items.map((item) => (
                     <BenefitCard
@@ -185,7 +189,7 @@ function Index() {
       <section className="border-t border-[#dce3e8] px-4 pb-0 pt-16 sm:px-6 lg:px-8 lg:pt-24">
         <div className="mx-auto max-w-5xl text-center">
           <div className="mx-auto h-4 w-4 rounded-full bg-[#22a56a]" />
-          <h2 className="mx-auto mt-8 max-w-4xl text-4xl font-semibold leading-tight tracking-tight sm:text-6xl">
+          <h2 className="font-public-display mx-auto mt-8 max-w-4xl text-4xl leading-tight tracking-tight sm:text-6xl">
             The best candidates aren&apos;t applying.
             <span className="block">They&apos;re being vouched for.</span>
           </h2>
@@ -215,10 +219,6 @@ function Index() {
               </Link>
             </Button>
           </div>
-
-          <p className="mt-8 text-sm uppercase tracking-[0.28em] text-[#667084]">
-            Launching with YC W25 cohort
-          </p>
         </div>
 
         <footer className="mt-20 border-t border-[#dce3e8] px-4 py-10 sm:px-0">
@@ -229,12 +229,12 @@ function Index() {
               <span>Terms of Service</span>
             </div>
 
-            <div className="mt-8 inline-flex items-center gap-3 text-[2rem] font-semibold tracking-tight">
+            <div className="font-public-display mt-8 inline-flex items-center gap-3 text-[2rem] tracking-tight">
               <span className="h-3 w-3 rounded-full bg-[#22a56a]" />
               <span>Passport</span>
             </div>
 
-            <p className="mt-5 text-sm uppercase tracking-[0.28em] text-[#667084]">
+            <p className="font-public-mono mt-5 text-sm uppercase tracking-[0.28em] text-[#667084]">
               © 2026 Passport. The peer referral network.
             </p>
           </div>
@@ -262,7 +262,7 @@ function AudienceEntryCard({
       <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#eef9f3] text-[#22a56a]">
         <Icon className="h-5 w-5" />
       </div>
-      <h3 className="mt-5 text-[1.9rem] font-semibold tracking-tight">{title}</h3>
+      <h3 className="font-public-display mt-5 text-[1.9rem] tracking-tight">{title}</h3>
       <p className="mt-3 text-lg leading-8 text-[#697386]">{description}</p>
       <Link
         to={to}
@@ -291,7 +291,7 @@ function BenefitCard({
           <Icon className="h-5 w-5" />
         </div>
         <div>
-          <h3 className="text-[2rem] font-semibold leading-tight tracking-tight">{title}</h3>
+          <h3 className="font-public-display text-[2rem] leading-tight tracking-tight">{title}</h3>
           <p className="mt-3 text-lg leading-8 text-[#697386]">{description}</p>
         </div>
       </div>
