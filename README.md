@@ -4,12 +4,14 @@
 
 - public-facing Passport landing page at `/`
 - founder referral flow at `/refer`
-- candidate placeholder page at `/candidate`
+- candidate landing page at `/candidate`
+- candidate claim page at `/candidate/claim`
+- candidate profile flow at `/candidate/profile`
 
 ## Current usage
 
 - the site is currently focused on collecting founder-submitted warm referrals
-- public users should only encounter the landing page and referral flow
+- founders submit referrals, Passport emails candidates secure claim links, and candidates complete their profiles through the candidate portal
 
 ## Paused hidden workspaces
 

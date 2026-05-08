@@ -19,19 +19,25 @@ export const Route = createFileRoute("/candidate")({
 
 function CandidatePage() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#fbf9f4] px-4 py-12 text-[#171a22]">
+    <main className="font-public-sans flex min-h-screen items-center justify-center bg-[#fbf9f4] px-4 py-12 text-[#171a22]">
       <Card className="w-full max-w-2xl rounded-[2rem] border border-[#dbe2e7] bg-white p-10 text-center shadow-[0_24px_80px_-28px_rgba(38,49,64,0.16)]">
         <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#eef9f3] text-[#22a56a]">
           <UserRound className="h-7 w-7" />
         </div>
-        <p className="mt-6 text-xs uppercase tracking-[0.32em] text-[#22a56a]">Passport</p>
-        <h1 className="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">
+        <p className="font-public-mono mt-6 text-xs uppercase tracking-[0.32em] text-[#22a56a]">
+          Passport
+        </p>
+        <h1 className="font-public-display mt-4 text-4xl tracking-tight sm:text-5xl">
           You&apos;ve been referred
         </h1>
         <p className="mx-auto mt-5 max-w-xl text-lg leading-8 text-[#697386]">
           Candidate onboarding is handled privately after a founder submits a referral. If someone
           has vouched for you, we&apos;ll email you with the exact details and an opt-in link before
           anything is shared.
+        </p>
+        <p className="mx-auto mt-4 max-w-lg text-sm leading-7 text-[#667084]">
+          Already received an invite? Open the link from your email to claim your referral and build
+          your profile.
         </p>
         <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
           <Button asChild className="rounded-xl bg-[#22a56a] px-6 text-white hover:bg-[#1d905d]">

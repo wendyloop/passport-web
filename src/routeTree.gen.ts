@@ -22,6 +22,8 @@ import { Route as TalentImportRouteImport } from './routes/talent.import'
 import { Route as PortalLoginRouteImport } from './routes/portal.login'
 import { Route as PortalEmployersRouteImport } from './routes/portal.employers'
 import { Route as PortalAdminRouteImport } from './routes/portal.admin'
+import { Route as CandidateProfileRouteImport } from './routes/candidate.profile'
+import { Route as CandidateClaimRouteImport } from './routes/candidate.claim'
 import { Route as TalentCandidatesProfileIdRouteImport } from './routes/talent.candidates.$profileId'
 import { Route as PortalCandidatesApplicationIdRouteImport } from './routes/portal.candidates.$applicationId'
 
@@ -90,6 +92,16 @@ const PortalAdminRoute = PortalAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => PortalRoute,
 } as any)
+const CandidateProfileRoute = CandidateProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => CandidateRoute,
+} as any)
+const CandidateClaimRoute = CandidateClaimRouteImport.update({
+  id: '/claim',
+  path: '/claim',
+  getParentRoute: () => CandidateRoute,
+} as any)
 const TalentCandidatesProfileIdRoute =
   TalentCandidatesProfileIdRouteImport.update({
     id: '/candidates/$profileId',
@@ -105,10 +117,12 @@ const PortalCandidatesApplicationIdRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/candidate': typeof CandidateRoute
+  '/candidate': typeof CandidateRouteWithChildren
   '/portal': typeof PortalRouteWithChildren
   '/refer': typeof ReferRoute
   '/talent': typeof TalentRouteWithChildren
+  '/candidate/claim': typeof CandidateClaimRoute
+  '/candidate/profile': typeof CandidateProfileRoute
   '/portal/admin': typeof PortalAdminRoute
   '/portal/employers': typeof PortalEmployersRoute
   '/portal/login': typeof PortalLoginRoute
@@ -122,8 +136,10 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/candidate': typeof CandidateRoute
+  '/candidate': typeof CandidateRouteWithChildren
   '/refer': typeof ReferRoute
+  '/candidate/claim': typeof CandidateClaimRoute
+  '/candidate/profile': typeof CandidateProfileRoute
   '/portal/admin': typeof PortalAdminRoute
   '/portal/employers': typeof PortalEmployersRoute
   '/portal/login': typeof PortalLoginRoute
@@ -138,10 +154,12 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/candidate': typeof CandidateRoute
+  '/candidate': typeof CandidateRouteWithChildren
   '/portal': typeof PortalRouteWithChildren
   '/refer': typeof ReferRoute
   '/talent': typeof TalentRouteWithChildren
+  '/candidate/claim': typeof CandidateClaimRoute
+  '/candidate/profile': typeof CandidateProfileRoute
   '/portal/admin': typeof PortalAdminRoute
   '/portal/employers': typeof PortalEmployersRoute
   '/portal/login': typeof PortalLoginRoute
@@ -161,6 +179,8 @@ export interface FileRouteTypes {
     | '/portal'
     | '/refer'
     | '/talent'
+    | '/candidate/claim'
+    | '/candidate/profile'
     | '/portal/admin'
     | '/portal/employers'
     | '/portal/login'
@@ -176,6 +196,8 @@ export interface FileRouteTypes {
     | '/'
     | '/candidate'
     | '/refer'
+    | '/candidate/claim'
+    | '/candidate/profile'
     | '/portal/admin'
     | '/portal/employers'
     | '/portal/login'
@@ -193,6 +215,8 @@ export interface FileRouteTypes {
     | '/portal'
     | '/refer'
     | '/talent'
+    | '/candidate/claim'
+    | '/candidate/profile'
     | '/portal/admin'
     | '/portal/employers'
     | '/portal/login'
@@ -207,7 +231,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  CandidateRoute: typeof CandidateRoute
+  CandidateRoute: typeof CandidateRouteWithChildren
   PortalRoute: typeof PortalRouteWithChildren
   ReferRoute: typeof ReferRoute
   TalentRoute: typeof TalentRouteWithChildren
@@ -306,6 +330,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PortalAdminRouteImport
       parentRoute: typeof PortalRoute
     }
+    '/candidate/profile': {
+      id: '/candidate/profile'
+      path: '/profile'
+      fullPath: '/candidate/profile'
+      preLoaderRoute: typeof CandidateProfileRouteImport
+      parentRoute: typeof CandidateRoute
+    }
+    '/candidate/claim': {
+      id: '/candidate/claim'
+      path: '/claim'
+      fullPath: '/candidate/claim'
+      preLoaderRoute: typeof CandidateClaimRouteImport
+      parentRoute: typeof CandidateRoute
+    }
     '/talent/candidates/$profileId': {
       id: '/talent/candidates/$profileId'
       path: '/candidates/$profileId'
@@ -322,6 +360,20 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface CandidateRouteChildren {
+  CandidateClaimRoute: typeof CandidateClaimRoute
+  CandidateProfileRoute: typeof CandidateProfileRoute
+}
+
+const CandidateRouteChildren: CandidateRouteChildren = {
+  CandidateClaimRoute: CandidateClaimRoute,
+  CandidateProfileRoute: CandidateProfileRoute,
+}
+
+const CandidateRouteWithChildren = CandidateRoute._addFileChildren(
+  CandidateRouteChildren,
+)
 
 interface PortalRouteChildren {
   PortalAdminRoute: typeof PortalAdminRoute
@@ -363,7 +415,7 @@ const TalentRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  CandidateRoute: CandidateRoute,
+  CandidateRoute: CandidateRouteWithChildren,
   PortalRoute: PortalRouteWithChildren,
   ReferRoute: ReferRoute,
   TalentRoute: TalentRouteWithChildren,

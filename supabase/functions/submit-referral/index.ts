@@ -1,5 +1,12 @@
 import { optionsResponse, errorResponse, jsonResponse } from "../_shared/http.ts";
 import { createAdminClient } from "../_shared/supabase.ts";
+import {
+  candidateInviteExpiry,
+  createCandidateInviteToken,
+  getPublicAppUrl,
+  hashCandidateInviteToken,
+  sendCandidateInviteEmail,
+} from "../_shared/candidate-portal.ts";
 
 const EMAIL_PATTERN = /^[^\s@]{3,}@[^\s@]+\.[^\s@]+$/i;
 const COMPANY_SITE_PATTERN =
@@ -30,9 +37,14 @@ Deno.serve(async (request) => {
     return errorResponse(405, "Method not allowed.");
   }
 
+  const supabase = createAdminClient();
+  let referralId: string | null = null;
+  let inviteId: string | null = null;
+  let inviteEmailSent = false;
+
   try {
     const payload = normalizePayload(await request.json());
-    const supabase = createAdminClient();
+
     const { data, error } = await supabase
       .from("referrals")
       .insert({
@@ -49,6 +61,8 @@ Deno.serve(async (request) => {
         exceptional_why: payload.exceptionalWhy,
         strengths: payload.strengths,
         founders_note: payload.foundersNote,
+        candidate_invite_status: "pending",
+        candidate_profile_status: "pending",
       })
       .select("id")
       .single();
@@ -57,8 +71,82 @@ Deno.serve(async (request) => {
       throw error;
     }
 
+    referralId = data.id;
+
+    const rawInviteToken = createCandidateInviteToken();
+    const tokenHash = await hashCandidateInviteToken(rawInviteToken);
+    const expiresAt = candidateInviteExpiry();
+
+    const { data: inviteData, error: inviteError } = await supabase
+      .from("candidate_invites")
+      .insert({
+        referral_id: referralId,
+        candidate_email: payload.candidateEmail,
+        candidate_name: payload.candidateName,
+        token_hash: tokenHash,
+        expires_at: expiresAt,
+        status: "pending",
+      })
+      .select("id")
+      .single();
+
+    if (inviteError) {
+      throw inviteError;
+    }
+
+    inviteId = inviteData.id;
+
+    const claimUrl = `${getPublicAppUrl()}/candidate/claim?token=${encodeURIComponent(rawInviteToken)}`;
+
+    await sendCandidateInviteEmail({
+      to: payload.candidateEmail,
+      candidateName: payload.candidateName,
+      companyName: payload.companyName,
+      referrerName: payload.referrerName,
+      roleInterviewedFor: payload.roleInterviewedFor,
+      claimUrl,
+    });
+
+    inviteEmailSent = true;
+
+    const [inviteUpdate, referralUpdate] = await Promise.all([
+      supabase
+        .from("candidate_invites")
+        .update({
+          status: "sent",
+          sent_at: new Date().toISOString(),
+        })
+        .eq("id", inviteId)
+        .select("id")
+        .single(),
+      supabase
+        .from("referrals")
+        .update({
+          candidate_invite_status: "sent",
+          candidate_invited_at: new Date().toISOString(),
+        })
+        .eq("id", referralId)
+        .select("id")
+        .single(),
+    ]);
+
+    if (inviteUpdate.error || referralUpdate.error) {
+      console.error("submit-referral status update warning", {
+        inviteUpdateError: inviteUpdate.error,
+        referralUpdateError: referralUpdate.error,
+      });
+    }
+
     return jsonResponse(200, { referralId: data.id, success: true });
   } catch (error) {
+    if (!inviteEmailSent && inviteId) {
+      await supabase.from("candidate_invites").delete().eq("id", inviteId);
+    }
+
+    if (!inviteEmailSent && referralId) {
+      await supabase.from("referrals").delete().eq("id", referralId);
+    }
+
     const message = error instanceof Error ? error.message : "Could not submit the referral.";
     console.error("submit-referral failed", { message, error });
     return errorResponse(400, message);
