@@ -24,6 +24,9 @@ export const Route = createFileRoute("/refer")({
 });
 
 const TOTAL_STEPS = 3;
+const EMAIL_PATTERN = /^[^\s@]{3,}@[^\s@]+\.[^\s@]+$/i;
+const COMPANY_SITE_PATTERN =
+  /^(https?:\/\/)?([a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}(\/.*)?$/i;
 const strengthOptions = [
   "Technical depth",
   "Leadership",
@@ -43,6 +46,7 @@ function ReferPage() {
   const [submitted, setSubmitted] = useState(false);
 
   const [companyName, setCompanyName] = useState("");
+  const [companySite, setCompanySite] = useState("");
   const [referrerName, setReferrerName] = useState("");
   const [referrerEmail, setReferrerEmail] = useState("");
   const [ycBatch, setYcBatch] = useState("");
@@ -80,6 +84,7 @@ function ReferPage() {
   function nextStep() {
     const error = validateStep(step, {
       companyName,
+      companySite,
       referrerName,
       referrerEmail,
       ycBatch,
@@ -124,6 +129,7 @@ function ReferPage() {
 
     const error = validateStep(3, {
       companyName,
+      companySite,
       referrerName,
       referrerEmail,
       ycBatch,
@@ -145,6 +151,7 @@ function ReferPage() {
     try {
       await submitReferral({
         companyName,
+        companySite,
         referrerName,
         referrerEmail,
         ycBatch,
@@ -169,13 +176,15 @@ function ReferPage() {
 
   if (submitted) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#fcfbf8] px-4 py-10 text-[#161a22]">
+      <main className="font-public-sans flex min-h-screen items-center justify-center bg-[#fcfbf8] px-4 py-10 text-[#161a22]">
         <Card className="max-w-xl rounded-[2rem] border-[#dce2e8] bg-white p-10 text-center shadow-[0_24px_80px_-28px_rgba(38,49,64,0.14)]">
           <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-[#161a22]">
             <CheckCircle2 className="h-8 w-8 text-white" />
           </div>
-          <p className="text-xs uppercase tracking-[0.34em] text-[#667085]">Passport</p>
-          <h1 className="mt-3 text-3xl font-semibold tracking-tight">Referral submitted</h1>
+          <p className="font-public-mono text-xs uppercase tracking-[0.34em] text-[#667085]">
+            Passport
+          </p>
+          <h1 className="font-public-display mt-3 text-3xl tracking-tight">Referral submitted</h1>
           <p className="mt-3 text-sm leading-7 text-[#667085]">
             Thanks {referrerName.split(" ")[0] || referrerName}. We received your referral for{" "}
             {candidateName} and will handle the next step with care.
@@ -195,7 +204,7 @@ function ReferPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#fcfbf8] text-[#161a22]">
+    <main className="font-public-sans min-h-screen bg-[#fcfbf8] text-[#161a22]">
       <header className="border-b border-[#e6ebf0] bg-[#fcfbf8]">
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4 sm:px-6 lg:px-8">
           {step === 1 ? (
@@ -217,7 +226,7 @@ function ReferPage() {
             </button>
           )}
 
-          <div className="inline-flex items-center gap-3 text-[2rem] font-semibold tracking-tight">
+          <div className="font-public-display inline-flex items-center gap-3 text-[2rem] tracking-tight">
             <span className="h-3 w-3 rounded-full bg-[#22a56a]" />
             <span>Passport</span>
           </div>
@@ -232,10 +241,10 @@ function ReferPage() {
             <ProgressBar step={step} />
 
             <div className="mt-12">
-              <p className="text-sm uppercase tracking-[0.28em] text-[#22a56a]">
+              <p className="font-public-mono text-sm uppercase tracking-[0.28em] text-[#22a56a]">
                 Step {step} of {TOTAL_STEPS}
               </p>
-              <h1 className="mt-5 text-5xl font-semibold tracking-tight sm:text-[3.6rem]">
+              <h1 className="font-public-display mt-5 text-5xl tracking-tight sm:text-[3.6rem]">
                 {stepMeta.title}
               </h1>
               <p className="mt-4 text-xl leading-8 text-[#667085]">{stepMeta.description}</p>
@@ -249,6 +258,19 @@ function ReferPage() {
                       value={companyName}
                       onChange={(event) => setCompanyName(event.target.value)}
                       placeholder="Acme Inc."
+                      required
+                    />
+                  </Field>
+                  <Field label="Company site" required hint="Used for legitimacy checks.">
+                    <WarmInput
+                      value={companySite}
+                      onChange={(event) => setCompanySite(event.target.value)}
+                      placeholder="acme.com"
+                      autoCapitalize="none"
+                      autoCorrect="off"
+                      inputMode="url"
+                      pattern={COMPANY_SITE_PATTERN.source}
+                      title="Enter a valid company site, like acme.com or https://acme.com."
                       required
                     />
                   </Field>
@@ -266,6 +288,11 @@ function ReferPage() {
                       value={referrerEmail}
                       onChange={(event) => setReferrerEmail(event.target.value)}
                       placeholder="jamie@acme.com"
+                      autoCapitalize="none"
+                      autoCorrect="off"
+                      inputMode="email"
+                      pattern={EMAIL_PATTERN.source}
+                      title="Enter a valid work email with at least 3 characters before the @."
                       required
                     />
                   </Field>
@@ -295,6 +322,11 @@ function ReferPage() {
                       value={candidateEmail}
                       onChange={(event) => setCandidateEmail(event.target.value)}
                       placeholder="alex@email.com"
+                      autoCapitalize="none"
+                      autoCorrect="off"
+                      inputMode="email"
+                      pattern={EMAIL_PATTERN.source}
+                      title="Enter a valid email with at least 3 characters before the @."
                       required
                     />
                   </Field>
@@ -315,10 +347,11 @@ function ReferPage() {
                     />
                   </Field>
                   <Field label="Why not hired?" required>
-                    <WarmInput
+                    <WarmTextarea
                       value={whyNotHire}
                       onChange={(event) => setWhyNotHire(event.target.value)}
-                      placeholder="Team fit, timing, headcount"
+                      rows={4}
+                      placeholder="Team fit, timing, headcount."
                       required
                     />
                   </Field>
@@ -404,6 +437,7 @@ function validateStep(
   step: number,
   values: {
     companyName: string;
+    companySite: string;
     referrerName: string;
     referrerEmail: string;
     ycBatch: string;
@@ -417,8 +451,21 @@ function validateStep(
   },
 ) {
   if (step === 1) {
-    if (!values.companyName.trim() || !values.referrerName.trim() || !values.referrerEmail.trim()) {
-      return "Please complete company name, your name, and your email.";
+    if (
+      !values.companyName.trim() ||
+      !values.companySite.trim() ||
+      !values.referrerName.trim() ||
+      !values.referrerEmail.trim()
+    ) {
+      return "Please complete company name, company site, your name, and your email.";
+    }
+
+    if (!COMPANY_SITE_PATTERN.test(values.companySite.trim())) {
+      return "Enter a valid company site, like acme.com.";
+    }
+
+    if (!EMAIL_PATTERN.test(values.referrerEmail.trim())) {
+      return "Enter a valid work email with at least 3 characters before the @.";
     }
   }
 
@@ -431,6 +478,10 @@ function validateStep(
       !values.whyNotHire.trim()
     ) {
       return "Please complete all silver medalist details before moving on.";
+    }
+
+    if (!EMAIL_PATTERN.test(values.candidateEmail.trim())) {
+      return "Enter a valid candidate email with at least 3 characters before the @.";
     }
   }
 

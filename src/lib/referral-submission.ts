@@ -2,6 +2,7 @@ import { getSupabaseClient } from "./supabase";
 
 export type ReferralSubmissionInput = {
   companyName: string;
+  companySite: string;
   referrerName: string;
   referrerEmail: string;
   ycBatch: string;

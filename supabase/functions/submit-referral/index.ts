@@ -1,10 +1,13 @@
 import { optionsResponse, errorResponse, jsonResponse } from "../_shared/http.ts";
 import { createAdminClient } from "../_shared/supabase.ts";
 
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/i;
+const EMAIL_PATTERN = /^[^\s@]{3,}@[^\s@]+\.[^\s@]+$/i;
+const COMPANY_SITE_PATTERN =
+  /^(https?:\/\/)?([a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}(\/.*)?$/i;
 
 type ReferralPayload = {
   companyName: string;
+  companySite: string;
   referrerName: string;
   referrerEmail: string;
   ycBatch: string;
@@ -34,6 +37,7 @@ Deno.serve(async (request) => {
       .from("referrals")
       .insert({
         company_name: payload.companyName,
+        company_site: payload.companySite,
         referrer_name: payload.referrerName,
         referrer_email: payload.referrerEmail,
         yc_batch: payload.ycBatch,
@@ -68,6 +72,7 @@ function normalizePayload(payload: unknown) {
 
   const maybePayload = payload as Partial<ReferralPayload>;
   const companyName = maybePayload.companyName?.trim();
+  const companySite = maybePayload.companySite?.trim().toLowerCase();
   const referrerName = maybePayload.referrerName?.trim();
   const referrerEmail = maybePayload.referrerEmail?.trim().toLowerCase();
   const ycBatch = maybePayload.ycBatch?.trim();
@@ -84,6 +89,9 @@ function normalizePayload(payload: unknown) {
 
   if (!companyName) {
     throw new Error("Company name is required.");
+  }
+  if (!companySite || !COMPANY_SITE_PATTERN.test(companySite)) {
+    throw new Error("A valid company site is required.");
   }
   if (!referrerName) {
     throw new Error("Your name is required.");
@@ -121,6 +129,7 @@ function normalizePayload(payload: unknown) {
 
   return {
     companyName,
+    companySite,
     referrerName,
     referrerEmail,
     ycBatch,
