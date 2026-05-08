@@ -10,7 +10,9 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TalentRouteImport } from './routes/talent'
+import { Route as ReferRouteImport } from './routes/refer'
 import { Route as PortalRouteImport } from './routes/portal'
+import { Route as CandidateRouteImport } from './routes/candidate'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TalentIndexRouteImport } from './routes/talent.index'
 import { Route as PortalIndexRouteImport } from './routes/portal.index'
@@ -28,9 +30,19 @@ const TalentRoute = TalentRouteImport.update({
   path: '/talent',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ReferRoute = ReferRouteImport.update({
+  id: '/refer',
+  path: '/refer',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PortalRoute = PortalRouteImport.update({
   id: '/portal',
   path: '/portal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CandidateRoute = CandidateRouteImport.update({
+  id: '/candidate',
+  path: '/candidate',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -93,7 +105,9 @@ const PortalCandidatesApplicationIdRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/candidate': typeof CandidateRoute
   '/portal': typeof PortalRouteWithChildren
+  '/refer': typeof ReferRoute
   '/talent': typeof TalentRouteWithChildren
   '/portal/admin': typeof PortalAdminRoute
   '/portal/employers': typeof PortalEmployersRoute
@@ -108,6 +122,8 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/candidate': typeof CandidateRoute
+  '/refer': typeof ReferRoute
   '/portal/admin': typeof PortalAdminRoute
   '/portal/employers': typeof PortalEmployersRoute
   '/portal/login': typeof PortalLoginRoute
@@ -122,7 +138,9 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/candidate': typeof CandidateRoute
   '/portal': typeof PortalRouteWithChildren
+  '/refer': typeof ReferRoute
   '/talent': typeof TalentRouteWithChildren
   '/portal/admin': typeof PortalAdminRoute
   '/portal/employers': typeof PortalEmployersRoute
@@ -139,7 +157,9 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/candidate'
     | '/portal'
+    | '/refer'
     | '/talent'
     | '/portal/admin'
     | '/portal/employers'
@@ -154,6 +174,8 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/candidate'
+    | '/refer'
     | '/portal/admin'
     | '/portal/employers'
     | '/portal/login'
@@ -167,7 +189,9 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/candidate'
     | '/portal'
+    | '/refer'
     | '/talent'
     | '/portal/admin'
     | '/portal/employers'
@@ -183,7 +207,9 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CandidateRoute: typeof CandidateRoute
   PortalRoute: typeof PortalRouteWithChildren
+  ReferRoute: typeof ReferRoute
   TalentRoute: typeof TalentRouteWithChildren
 }
 
@@ -196,11 +222,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TalentRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/refer': {
+      id: '/refer'
+      path: '/refer'
+      fullPath: '/refer'
+      preLoaderRoute: typeof ReferRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/portal': {
       id: '/portal'
       path: '/portal'
       fullPath: '/portal'
       preLoaderRoute: typeof PortalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/candidate': {
+      id: '/candidate'
+      path: '/candidate'
+      fullPath: '/candidate'
+      preLoaderRoute: typeof CandidateRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -323,7 +363,9 @@ const TalentRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CandidateRoute: CandidateRoute,
   PortalRoute: PortalRouteWithChildren,
+  ReferRoute: ReferRoute,
   TalentRoute: TalentRouteWithChildren,
 }
 export const routeTree = rootRouteImport
