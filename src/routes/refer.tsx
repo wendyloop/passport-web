@@ -31,6 +31,7 @@ export const Route = createFileRoute("/refer")({
 });
 
 const TOTAL_STEPS = 3;
+const DESKTOP_PAGE_SCALE = "lg:origin-top lg:scale-[0.7] lg:w-[142.857%] lg:-translate-x-[15%]";
 const EMAIL_PATTERN = /^[^\s@]{3,}@[^\s@]+\.[^\s@]+$/i;
 const COMPANY_SITE_PATTERN =
   /^(https?:\/\/)?([a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}(\/.*)?$/i;
@@ -264,7 +265,9 @@ function ReferPage() {
         </div>
       </header>
 
-      <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8 lg:py-14">
+      <div
+        className={`mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8 lg:py-14 ${DESKTOP_PAGE_SCALE}`}
+      >
         <form onSubmit={handleSubmit}>
           <div className="mx-auto max-w-3xl">
             <ProgressBar step={step} />
