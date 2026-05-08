@@ -56,6 +56,18 @@ const roundReachedOptions = [
   "Founder round",
   "Final round",
 ];
+const whyNotHiredOptions = [
+  "Team fit",
+  "Timing",
+  "Headcount",
+  "Level mismatch",
+  "Role scope changed",
+  "Location mismatch",
+  "Compensation mismatch",
+  "Another candidate accepted",
+  "Hiring freeze",
+  "Visa constraints",
+];
 
 function ReferPage() {
   const [step, setStep] = useState(1);
@@ -370,13 +382,18 @@ function ReferPage() {
                     </Select>
                   </Field>
                   <Field label="Why not hired?" required>
-                    <WarmTextarea
-                      value={whyNotHire}
-                      onChange={(event) => setWhyNotHire(event.target.value)}
-                      rows={4}
-                      placeholder="Team fit, timing, headcount."
-                      required
-                    />
+                    <Select value={whyNotHire} onValueChange={setWhyNotHire}>
+                      <WarmSelectTrigger>
+                        <SelectValue placeholder="Select why they weren't hired" />
+                      </WarmSelectTrigger>
+                      <WarmSelectContent>
+                        {whyNotHiredOptions.map((option) => (
+                          <SelectItem key={option} value={option}>
+                            {option}
+                          </SelectItem>
+                        ))}
+                      </WarmSelectContent>
+                    </Select>
                   </Field>
                 </>
               ) : null}
