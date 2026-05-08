@@ -5,6 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { submitReferral } from "@/lib/referral-submission";
 import { toast } from "sonner";
@@ -38,6 +45,16 @@ const strengthOptions = [
   "Execution speed",
   "Cross-functional",
   "Domain expertise",
+];
+const roundReachedOptions = [
+  "Recruiter screen",
+  "Hiring manager",
+  "Take-home",
+  "Technical screen",
+  "Panel interview",
+  "Onsite",
+  "Founder round",
+  "Final round",
 ];
 
 function ReferPage() {
@@ -339,12 +356,18 @@ function ReferPage() {
                     />
                   </Field>
                   <Field label="Round reached" required>
-                    <WarmInput
-                      value={roundReached}
-                      onChange={(event) => setRoundReached(event.target.value)}
-                      placeholder="Final round"
-                      required
-                    />
+                    <Select value={roundReached} onValueChange={setRoundReached}>
+                      <WarmSelectTrigger>
+                        <SelectValue placeholder="Select round reached" />
+                      </WarmSelectTrigger>
+                      <WarmSelectContent>
+                        {roundReachedOptions.map((option) => (
+                          <SelectItem key={option} value={option}>
+                            {option}
+                          </SelectItem>
+                        ))}
+                      </WarmSelectContent>
+                    </Select>
                   </Field>
                   <Field label="Why not hired?" required>
                     <WarmTextarea
@@ -547,6 +570,24 @@ function WarmTextarea(props: React.ComponentProps<typeof Textarea>) {
     <Textarea
       {...props}
       className={`rounded-2xl border-[#d6dde3] bg-white px-4 py-3 text-lg leading-8 text-[#161a22] placeholder:text-[#98a2b3] focus-visible:ring-[#22a56a] ${props.className ?? ""}`}
+    />
+  );
+}
+
+function WarmSelectTrigger(props: React.ComponentProps<typeof SelectTrigger>) {
+  return (
+    <SelectTrigger
+      {...props}
+      className={`h-14 rounded-2xl border-[#d6dde3] bg-white px-4 text-lg text-[#161a22] data-[placeholder]:text-[#98a2b3] focus:ring-[#22a56a] ${props.className ?? ""}`}
+    />
+  );
+}
+
+function WarmSelectContent(props: React.ComponentProps<typeof SelectContent>) {
+  return (
+    <SelectContent
+      {...props}
+      className={`rounded-2xl border-[#d6dde3] bg-white text-[#161a22] ${props.className ?? ""}`}
     />
   );
 }
