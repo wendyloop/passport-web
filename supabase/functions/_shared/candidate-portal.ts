@@ -8,6 +8,7 @@ type CandidateInviteRecord = {
   candidate_name: string;
   status: string;
   token_hash: string;
+  claim_code_hash: string;
   expires_at: string;
   claimed_at: string | null;
   completed_at: string | null;
@@ -50,6 +51,10 @@ export function createCandidateInviteToken() {
   return crypto.randomUUID().replace(/-/g, "") + crypto.randomUUID().replace(/-/g, "");
 }
 
+export function createCandidateClaimCode() {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
 export async function hashCandidateInviteToken(token: string) {
   const input = new TextEncoder().encode(token);
   const digest = await crypto.subtle.digest("SHA-256", input);
@@ -57,6 +62,10 @@ export async function hashCandidateInviteToken(token: string) {
   return Array.from(new Uint8Array(digest))
     .map((value) => value.toString(16).padStart(2, "0"))
     .join("");
+}
+
+export async function hashCandidateClaimCode(code: string) {
+  return hashCandidateInviteToken(code);
 }
 
 export function candidateInviteExpiry(days = 7) {
@@ -74,6 +83,7 @@ export async function sendCandidateInviteEmail(input: {
   referrerName: string;
   roleInterviewedFor: string;
   claimUrl: string;
+  claimCode: string;
 }) {
   const apiKey = requireEnv("RESEND_API_KEY");
   const from = requireEnv("RESEND_FROM_EMAIL");
@@ -102,11 +112,19 @@ export async function sendCandidateInviteEmail(input: {
           <p style="font-size:16px; line-height:1.7; color:#667085; margin:0 0 24px;">
             Create your profile so other verified founders can discover you with the right context.
           </p>
+          <div style="margin:0 0 22px; padding:16px 18px; border:1px solid #dbe2e7; border-radius:14px; background:#fbfcfd;">
+            <div style="font-size:12px; letter-spacing:0.18em; text-transform:uppercase; color:#667085; margin-bottom:8px;">
+              Claim code
+            </div>
+            <div style="font-family:'DM Mono', monospace; font-size:28px; color:#171a22;">
+              ${escapeHtml(input.claimCode)}
+            </div>
+          </div>
           <a href="${input.claimUrl}" style="display:inline-block; background:#1d9e75; color:#ffffff; text-decoration:none; padding:14px 22px; border-radius:12px; font-weight:600;">
             Create my profile
           </a>
           <p style="margin:22px 0 0; font-size:13px; line-height:1.7; color:#667085;">
-            If the button doesn't work, copy and paste this link into your browser:<br />
+            If the button doesn't work, you can also open Passport and enter your email with the code above. Or copy and paste this link into your browser:<br />
             <span style="word-break:break-all;">${escapeHtml(input.claimUrl)}</span>
           </p>
         </div>
@@ -118,6 +136,8 @@ export async function sendCandidateInviteEmail(input: {
     `Hi ${firstName},`,
     "",
     `${input.referrerName} at ${input.companyName} referred you to Passport after interviewing you for ${input.roleInterviewedFor}.`,
+    "",
+    `Claim code: ${input.claimCode}`,
     "",
     "Create your profile here:",
     input.claimUrl,
@@ -151,10 +171,32 @@ export async function loadCandidateInviteByToken(
   token: string,
 ): Promise<CandidateInviteRecord> {
   const tokenHash = await hashCandidateInviteToken(token);
-  const { data, error } = await supabase
-    .from("candidate_invites")
-    .select(
-      `id, referral_id, candidate_email, candidate_name, status, token_hash, expires_at, claimed_at, completed_at,
+  return loadInviteByFilters(supabase, { token_hash: tokenHash }, "This invite link is invalid.");
+}
+
+export async function loadCandidateInviteByCode(
+  supabase: SupabaseClient,
+  candidateEmail: string,
+  code: string,
+): Promise<CandidateInviteRecord> {
+  const claimCodeHash = await hashCandidateClaimCode(code);
+  return loadInviteByFilters(
+    supabase,
+    {
+      candidate_email: candidateEmail.toLowerCase(),
+      claim_code_hash: claimCodeHash,
+    },
+    "That email and claim code do not match an active invite.",
+  );
+}
+
+async function loadInviteByFilters(
+  supabase: SupabaseClient,
+  filters: Record<string, string>,
+  notFoundMessage: string,
+) {
+  let query = supabase.from("candidate_invites").select(
+    `id, referral_id, candidate_email, candidate_name, status, token_hash, claim_code_hash, expires_at, claimed_at, completed_at,
        referrals (
          id, company_name, company_site, referrer_name, referrer_email, yc_batch,
          candidate_name, candidate_email, role_interviewed_for, round_reached,
@@ -164,25 +206,29 @@ export async function loadCandidateInviteByToken(
        candidate_profiles (
          id, full_name, email, linkedin, location, preferred_roles, intro_note, consent_confirmed, profile_status
        )`,
-    )
-    .eq("token_hash", tokenHash)
-    .maybeSingle();
+  );
 
-  if (error) {
-    throw error;
+  for (const [key, value] of Object.entries(filters)) {
+    query = query.eq(key, value);
   }
 
-  if (!data) {
-    throw new Error("This invite link is invalid.");
+  const result = await query.maybeSingle();
+
+  if (result.error) {
+    throw result.error;
   }
 
-  const expiresAt = new Date(data.expires_at).getTime();
+  if (!result.data) {
+    throw new Error(notFoundMessage);
+  }
+
+  const expiresAt = new Date(result.data.expires_at).getTime();
 
   if (Number.isNaN(expiresAt) || expiresAt < Date.now()) {
     throw new Error("This invite link has expired.");
   }
 
-  return data as CandidateInviteRecord;
+  return result.data as CandidateInviteRecord;
 }
 
 export function formatCandidateInvite(input: CandidateInviteRecord) {

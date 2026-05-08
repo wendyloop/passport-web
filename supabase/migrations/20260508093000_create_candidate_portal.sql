@@ -11,6 +11,7 @@ create table if not exists public.candidate_invites (
   candidate_email text not null,
   candidate_name text not null,
   token_hash text not null unique,
+  claim_code_hash text unique,
   status text not null default 'pending',
   sent_at timestamptz,
   claimed_at timestamptz,

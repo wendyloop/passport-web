@@ -1,8 +1,14 @@
-import { formatCandidateInvite, loadCandidateInviteByToken } from "../_shared/candidate-portal.ts";
+import {
+  formatCandidateInvite,
+  loadCandidateInviteByCode,
+  loadCandidateInviteByToken,
+} from "../_shared/candidate-portal.ts";
 import { errorResponse, jsonResponse, optionsResponse } from "../_shared/http.ts";
 import { createAdminClient } from "../_shared/supabase.ts";
 
 type CandidateProfilePayload = {
+  code?: string;
+  email?: string;
   token?: string;
   fullName?: string;
   linkedin?: string;
@@ -26,7 +32,9 @@ Deno.serve(async (request) => {
   try {
     const payload = normalizePayload(await request.json());
     const supabase = createAdminClient();
-    const invite = await loadCandidateInviteByToken(supabase, payload.token);
+    const invite = payload.token
+      ? await loadCandidateInviteByToken(supabase, payload.token)
+      : await loadCandidateInviteByCode(supabase, payload.email, payload.code);
 
     if (!invite.referrals) {
       throw new Error("This referral record could not be found.");
@@ -121,6 +129,8 @@ function normalizePayload(payload: unknown) {
 
   const input = payload as CandidateProfilePayload;
   const token = input.token?.trim();
+  const email = input.email?.trim().toLowerCase();
+  const code = input.code?.trim();
   const fullName = input.fullName?.trim();
   const linkedin = input.linkedin?.trim() || null;
   const location = input.location?.trim() || null;
@@ -130,8 +140,8 @@ function normalizePayload(payload: unknown) {
   );
   const consentConfirmed = Boolean(input.consentConfirmed);
 
-  if (!token) {
-    throw new Error("Invite token is required.");
+  if (!token && !(email && code)) {
+    throw new Error("Invite token or email and claim code are required.");
   }
 
   if (!fullName) {
@@ -147,7 +157,9 @@ function normalizePayload(payload: unknown) {
   }
 
   return {
+    code: code ?? "",
     token,
+    email: email ?? "",
     fullName,
     linkedin,
     location,

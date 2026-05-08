@@ -1,6 +1,16 @@
-import { formatCandidateInvite, loadCandidateInviteByToken } from "../_shared/candidate-portal.ts";
+import {
+  formatCandidateInvite,
+  loadCandidateInviteByCode,
+  loadCandidateInviteByToken,
+} from "../_shared/candidate-portal.ts";
 import { errorResponse, jsonResponse, optionsResponse } from "../_shared/http.ts";
 import { createAdminClient } from "../_shared/supabase.ts";
+
+type VerifyInvitePayload = {
+  code?: string;
+  email?: string;
+  token?: string;
+};
 
 Deno.serve(async (request) => {
   if (request.method === "OPTIONS") {
@@ -12,15 +22,19 @@ Deno.serve(async (request) => {
   }
 
   try {
-    const body = (await request.json()) as { token?: string };
+    const body = (await request.json()) as VerifyInvitePayload;
     const token = body.token?.trim();
-
-    if (!token) {
-      throw new Error("Invite token is required.");
-    }
+    const email = body.email?.trim().toLowerCase();
+    const code = body.code?.trim();
 
     const supabase = createAdminClient();
-    const invite = await loadCandidateInviteByToken(supabase, token);
+    const invite = token
+      ? await loadCandidateInviteByToken(supabase, token)
+      : email && code
+        ? await loadCandidateInviteByCode(supabase, email, code)
+        : (() => {
+            throw new Error("Invite token or email and claim code are required.");
+          })();
 
     if (!invite.referrals) {
       throw new Error("This referral record could not be found.");

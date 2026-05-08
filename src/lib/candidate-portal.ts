@@ -41,8 +41,16 @@ type CandidateInviteEnvelope = {
   success: boolean;
 };
 
-export type CandidateProfileInput = {
-  token: string;
+export type CandidateInviteLookup =
+  | {
+      token: string;
+    }
+  | {
+      code: string;
+      email: string;
+    };
+
+export type CandidateProfileInput = CandidateInviteLookup & {
   fullName: string;
   linkedin: string;
   location: string;
@@ -51,12 +59,12 @@ export type CandidateProfileInput = {
   consentConfirmed: boolean;
 };
 
-export async function verifyCandidateInvite(token: string) {
+export async function verifyCandidateInvite(input: CandidateInviteLookup) {
   const supabase = getSupabaseClient();
   const { data, error } = await supabase.functions.invoke<CandidateInviteEnvelope>(
     "verify-candidate-invite",
     {
-      body: { token },
+      body: input,
     },
   );
 

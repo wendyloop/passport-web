@@ -17,6 +17,8 @@ import { toast } from "sonner";
 
 export const Route = createFileRoute("/candidate/profile")({
   validateSearch: (search: Record<string, unknown>) => ({
+    code: typeof search.code === "string" ? search.code : "",
+    email: typeof search.email === "string" ? search.email : "",
     token: typeof search.token === "string" ? search.token : "",
   }),
   head: () => ({
@@ -32,7 +34,8 @@ export const Route = createFileRoute("/candidate/profile")({
 });
 
 function CandidateProfilePage() {
-  const { token } = Route.useSearch();
+  const { token, email, code } = Route.useSearch();
+  const lookup = getInviteLookup({ token, email, code });
   const [fullName, setFullName] = useState("");
   const [linkedin, setLinkedin] = useState("");
   const [location, setLocation] = useState("");
@@ -42,9 +45,9 @@ function CandidateProfilePage() {
   const [submittedInvite, setSubmittedInvite] = useState<CandidateInvitePreview | null>(null);
 
   const inviteQuery = useQuery({
-    queryKey: ["candidate-profile-invite", token],
-    queryFn: () => verifyCandidateInvite(token),
-    enabled: Boolean(token),
+    queryKey: ["candidate-profile-invite", token || email, code || ""],
+    queryFn: () => verifyCandidateInvite(lookup!),
+    enabled: Boolean(lookup),
     retry: false,
   });
 
@@ -68,7 +71,7 @@ function CandidateProfilePage() {
   const saveMutation = useMutation({
     mutationFn: () =>
       completeCandidateProfile({
-        token,
+        ...lookup!,
         fullName,
         linkedin,
         location,
@@ -87,11 +90,11 @@ function CandidateProfilePage() {
     },
   });
 
-  if (!token) {
+  if (!lookup) {
     return (
       <CandidateProfileMessage
         title="Invite link missing"
-        message="This candidate profile link is incomplete."
+        message="This candidate profile link is incomplete. Use the secure link from your email or enter your email and claim code on the candidate page."
       />
     );
   }
@@ -223,7 +226,7 @@ function CandidateProfilePage() {
               variant="outline"
               className="rounded-xl border-[#d7dde3] bg-white px-6 text-[#171a22] hover:bg-[#f6f8fa]"
             >
-              <Link to="/candidate/claim" search={{ token }}>
+              <Link to="/candidate/claim" search={lookup}>
                 Back
               </Link>
             </Button>
@@ -299,4 +302,16 @@ function WarmTextarea(props: React.ComponentProps<typeof Textarea>) {
       className={`rounded-2xl border-[#d7dde3] bg-white px-4 py-3 text-base leading-7 text-[#171a22] placeholder:text-[#98a2b3] focus-visible:ring-[#22a56a] ${props.className ?? ""}`}
     />
   );
+}
+
+function getInviteLookup({ token, email, code }: { token: string; email: string; code: string }) {
+  if (token) {
+    return { token } as const;
+  }
+
+  if (email && code) {
+    return { email, code } as const;
+  }
+
+  return null;
 }

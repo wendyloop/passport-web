@@ -7,6 +7,8 @@ import { verifyCandidateInvite } from "@/lib/candidate-portal";
 
 export const Route = createFileRoute("/candidate/claim")({
   validateSearch: (search: Record<string, unknown>) => ({
+    code: typeof search.code === "string" ? search.code : "",
+    email: typeof search.email === "string" ? search.email : "",
     token: typeof search.token === "string" ? search.token : "",
   }),
   head: () => ({
@@ -22,19 +24,20 @@ export const Route = createFileRoute("/candidate/claim")({
 });
 
 function CandidateClaimPage() {
-  const { token } = Route.useSearch();
+  const { token, email, code } = Route.useSearch();
+  const lookup = getInviteLookup({ token, email, code });
   const inviteQuery = useQuery({
-    queryKey: ["candidate-invite", token],
-    queryFn: () => verifyCandidateInvite(token),
-    enabled: Boolean(token),
+    queryKey: ["candidate-invite", token || email, code || ""],
+    queryFn: () => verifyCandidateInvite(lookup!),
+    enabled: Boolean(lookup),
     retry: false,
   });
 
-  if (!token) {
+  if (!lookup) {
     return (
       <CandidateInviteMessage
         title="Invite link missing"
-        message="This candidate invite link is incomplete."
+        message="This candidate invite link is incomplete. Use the secure link from your email or enter your email and claim code on the candidate page."
       />
     );
   }
@@ -113,7 +116,7 @@ function CandidateClaimPage() {
 
         <div className="mt-8 flex flex-col gap-4 sm:flex-row">
           <Button asChild className="rounded-xl bg-[#22a56a] px-6 text-white hover:bg-[#1d905d]">
-            <Link to="/candidate/profile" search={{ token }}>
+            <Link to="/candidate/profile" search={lookup}>
               {invite.profile ? "Review my profile" : "Create my profile"}
               <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
@@ -123,7 +126,7 @@ function CandidateClaimPage() {
             variant="outline"
             className="rounded-xl border-[#d7dde3] bg-white px-6 text-[#171a22] hover:bg-[#f6f8fa]"
           >
-            <Link to="/">Back to homepage</Link>
+            <Link to="/candidate">Back</Link>
           </Button>
         </div>
       </Card>
@@ -157,4 +160,16 @@ function SummaryItem({ label, value }: { label: string; value: string }) {
       <p className="mt-2 text-base leading-7 text-[#344054]">{value}</p>
     </div>
   );
+}
+
+function getInviteLookup({ token, email, code }: { token: string; email: string; code: string }) {
+  if (token) {
+    return { token } as const;
+  }
+
+  if (email && code) {
+    return { email, code } as const;
+  }
+
+  return null;
 }

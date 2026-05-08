@@ -2,8 +2,10 @@ import { optionsResponse, errorResponse, jsonResponse } from "../_shared/http.ts
 import { createAdminClient } from "../_shared/supabase.ts";
 import {
   candidateInviteExpiry,
+  createCandidateClaimCode,
   createCandidateInviteToken,
   getPublicAppUrl,
+  hashCandidateClaimCode,
   hashCandidateInviteToken,
   sendCandidateInviteEmail,
 } from "../_shared/candidate-portal.ts";
@@ -74,7 +76,9 @@ Deno.serve(async (request) => {
     referralId = data.id;
 
     const rawInviteToken = createCandidateInviteToken();
+    const rawClaimCode = createCandidateClaimCode();
     const tokenHash = await hashCandidateInviteToken(rawInviteToken);
+    const claimCodeHash = await hashCandidateClaimCode(rawClaimCode);
     const expiresAt = candidateInviteExpiry();
 
     const { data: inviteData, error: inviteError } = await supabase
@@ -84,6 +88,7 @@ Deno.serve(async (request) => {
         candidate_email: payload.candidateEmail,
         candidate_name: payload.candidateName,
         token_hash: tokenHash,
+        claim_code_hash: claimCodeHash,
         expires_at: expiresAt,
         status: "pending",
       })
@@ -105,6 +110,7 @@ Deno.serve(async (request) => {
       referrerName: payload.referrerName,
       roleInterviewedFor: payload.roleInterviewedFor,
       claimUrl,
+      claimCode: rawClaimCode,
     });
 
     inviteEmailSent = true;
