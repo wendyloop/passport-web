@@ -18,7 +18,7 @@ type CandidateInviteRecord = {
     company_site: string;
     referrer_name: string;
     referrer_email: string;
-    yc_batch: string;
+    yc_batch: string | null;
     candidate_name: string;
     candidate_email: string;
     role_interviewed_for: string;
@@ -162,6 +162,93 @@ export async function sendCandidateInviteEmail(input: {
     const payload = await safeJson(response);
     throw new Error(
       `Could not send candidate invite email.${payload ? ` ${JSON.stringify(payload)}` : ""}`,
+    );
+  }
+}
+
+export async function sendFounderReferralReceiptEmail(input: {
+  to: string;
+  companyName: string;
+  referrerName: string;
+  candidateName: string;
+  candidateEmail: string;
+  roleInterviewedFor: string;
+}) {
+  const apiKey = requireEnv("RESEND_API_KEY");
+  const from = requireEnv("RESEND_FROM_EMAIL");
+
+  const firstName = input.referrerName.split(" ")[0] || input.referrerName;
+
+  const html = `
+    <div style="font-family: Syne, Arial, sans-serif; background:#fbf9f4; padding:32px; color:#171a22;">
+      <div style="max-width:640px; margin:0 auto; background:#ffffff; border:1px solid #dbe2e7; border-radius:20px; overflow:hidden;">
+        <div style="padding:24px 28px; border-bottom:1px solid #e7edf2;">
+          <div style="font-family:'DM Serif Display', Georgia, serif; font-size:28px; font-weight:700;">
+            <span style="display:inline-block; width:8px; height:8px; border-radius:999px; background:#1d9e75; margin-right:8px; vertical-align:middle;"></span>
+            Passport
+          </div>
+          <div style="margin-top:10px; font-size:12px; letter-spacing:0.18em; text-transform:uppercase; color:#667085;">
+            Peer Referral Network
+          </div>
+        </div>
+        <div style="padding:28px;">
+          <h1 style="font-family:'DM Serif Display', Georgia, serif; font-size:34px; line-height:1.05; margin:0 0 16px;">
+            Referral received.
+          </h1>
+          <p style="font-size:16px; line-height:1.7; color:#667085; margin:0 0 18px;">
+            Thanks ${escapeHtml(firstName)}. We received your Passport referral from ${escapeHtml(
+              input.companyName,
+            )} for ${escapeHtml(input.candidateName)}.
+          </p>
+          <div style="margin:0 0 22px; padding:16px 18px; border:1px solid #dbe2e7; border-radius:14px; background:#fbfcfd;">
+            <div style="font-size:12px; letter-spacing:0.18em; text-transform:uppercase; color:#667085; margin-bottom:10px;">
+              Referral summary
+            </div>
+            <div style="font-size:15px; line-height:1.8; color:#171a22;">
+              <div><strong>Candidate:</strong> ${escapeHtml(input.candidateName)}</div>
+              <div><strong>Email:</strong> ${escapeHtml(input.candidateEmail)}</div>
+              <div><strong>Role:</strong> ${escapeHtml(input.roleInterviewedFor)}</div>
+            </div>
+          </div>
+          <p style="font-size:15px; line-height:1.7; color:#667085; margin:0;">
+            We’ve emailed the candidate with their private claim link and code so they can opt in and create their Passport profile.
+          </p>
+        </div>
+      </div>
+    </div>
+  `;
+
+  const text = [
+    `Hi ${firstName},`,
+    "",
+    `We received your Passport referral from ${input.companyName}.`,
+    "",
+    `Candidate: ${input.candidateName}`,
+    `Email: ${input.candidateEmail}`,
+    `Role: ${input.roleInterviewedFor}`,
+    "",
+    "We have emailed the candidate with their private claim link and code so they can opt in and create their Passport profile.",
+  ].join("\n");
+
+  const response = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      from,
+      to: [input.to],
+      subject: `Passport received your referral for ${input.candidateName}`,
+      html,
+      text,
+    }),
+  });
+
+  if (!response.ok) {
+    const payload = await safeJson(response);
+    throw new Error(
+      `Could not send founder confirmation email.${payload ? ` ${JSON.stringify(payload)}` : ""}`,
     );
   }
 }

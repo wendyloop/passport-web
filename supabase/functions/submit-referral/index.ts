@@ -8,6 +8,7 @@ import {
   hashCandidateClaimCode,
   hashCandidateInviteToken,
   sendCandidateInviteEmail,
+  sendFounderReferralReceiptEmail,
 } from "../_shared/candidate-portal.ts";
 
 const EMAIL_PATTERN = /^[^\s@]{3,}@[^\s@]+\.[^\s@]+$/i;
@@ -114,6 +115,19 @@ Deno.serve(async (request) => {
     });
 
     inviteEmailSent = true;
+
+    try {
+      await sendFounderReferralReceiptEmail({
+        to: payload.referrerEmail,
+        companyName: payload.companyName,
+        referrerName: payload.referrerName,
+        candidateName: payload.candidateName,
+        candidateEmail: payload.candidateEmail,
+        roleInterviewedFor: payload.roleInterviewedFor,
+      });
+    } catch (error) {
+      console.error("submit-referral founder receipt warning", { error });
+    }
 
     const [inviteUpdate, referralUpdate] = await Promise.all([
       supabase
