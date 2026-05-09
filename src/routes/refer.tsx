@@ -31,7 +31,7 @@ export const Route = createFileRoute("/refer")({
 });
 
 const TOTAL_STEPS = 3;
-const DESKTOP_PAGE_SCALE = "lg:origin-top lg:scale-[0.7] lg:w-[142.857%] lg:-translate-x-[15%]";
+const DESKTOP_PAGE_SCALE = "lg:origin-top lg:scale-[0.7] lg:w-[142.857%]";
 const EMAIL_PATTERN = /^[^\s@]{3,}@[^\s@]+\.[^\s@]+$/i;
 const COMPANY_SITE_PATTERN =
   /^(https?:\/\/)?([a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}(\/.*)?$/i;
@@ -272,7 +272,7 @@ function ReferPage() {
           <div className="mx-auto max-w-3xl">
             <ProgressBar step={step} />
 
-            <div className="mt-12">
+            <div className="mt-12 text-center">
               <p className="font-public-mono text-sm uppercase tracking-[0.28em] text-[#22a56a]">
                 Step {step} of {TOTAL_STEPS}
               </p>
@@ -328,11 +328,12 @@ function ReferPage() {
                       required
                     />
                   </Field>
-                  <Field label="YC batch (if applicable)">
+                  <Field label="YC batch" required requiredMarker="dot">
                     <WarmInput
                       value={ycBatch}
                       onChange={(event) => setYcBatch(event.target.value)}
                       placeholder="W25"
+                      required
                     />
                   </Field>
                 </>
@@ -498,9 +499,10 @@ function validateStep(
       !values.companyName.trim() ||
       !values.companySite.trim() ||
       !values.referrerName.trim() ||
-      !values.referrerEmail.trim()
+      !values.referrerEmail.trim() ||
+      !values.ycBatch.trim()
     ) {
-      return "Please complete company name, company site, your name, and your email.";
+      return "Please complete company name, company site, your name, your email, and YC batch.";
     }
 
     if (!COMPANY_SITE_PATTERN.test(values.companySite.trim())) {
@@ -558,17 +560,29 @@ function Field({
   label,
   hint,
   required,
+  requiredMarker = "asterisk",
   children,
 }: {
-  label: string;
+  label: React.ReactNode;
   hint?: string;
   required?: boolean;
+  requiredMarker?: "asterisk" | "dot";
   children: React.ReactNode;
 }) {
   return (
     <div className="space-y-3">
       <Label className="text-[1.35rem] font-medium text-[#161a22]">
-        {label} {required ? <span className="text-destructive">*</span> : null}
+        {label}{" "}
+        {required ? (
+          requiredMarker === "dot" ? (
+            <span
+              aria-hidden="true"
+              className="inline-block h-2.5 w-2.5 rounded-full bg-[#dc2626] align-middle"
+            />
+          ) : (
+            <span className="text-destructive">*</span>
+          )
+        ) : null}
       </Label>
       {children}
       {hint ? <p className="text-sm leading-6 text-[#667085]">{hint}</p> : null}
