@@ -16,12 +16,11 @@ export type CandidateInvitePreview = {
     companySite: string;
     referrerName: string;
     referrerEmail: string;
-    ycBatch: string;
+    ycBatch: string | null;
     roleInterviewedFor: string;
     roundReached: string;
     whyNotHire: string;
     strengths: string[];
-    foundersNote: string;
   } | null;
   profile: {
     id: string;

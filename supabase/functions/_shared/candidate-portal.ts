@@ -287,7 +287,7 @@ async function loadInviteByFilters(
        referrals (
          id, company_name, company_site, referrer_name, referrer_email, yc_batch,
          candidate_name, candidate_email, role_interviewed_for, round_reached,
-         why_not_hire, exceptional_why, strengths, founders_note,
+         why_not_hire, exceptional_why, strengths,
          candidate_invite_status, candidate_profile_status
        ),
        candidate_profiles (
@@ -343,7 +343,6 @@ export function formatCandidateInvite(input: CandidateInviteRecord) {
           roundReached: input.referrals.round_reached,
           whyNotHire: input.referrals.why_not_hire,
           strengths: input.referrals.strengths ?? [],
-          foundersNote: input.referrals.founders_note,
         }
       : null,
     profile: profile

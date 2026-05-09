@@ -103,17 +103,6 @@ function CandidateClaimPage() {
           <SummaryItem label="Referred email" value={invite.candidate.email} />
         </div>
 
-        {invite.referral?.foundersNote ? (
-          <div className="mt-6 rounded-[1.5rem] border border-[#e5ebf0] bg-[#fbf9f4] p-5">
-            <p className="font-public-mono text-xs uppercase tracking-[0.24em] text-[#667084]">
-              Founder note
-            </p>
-            <p className="mt-3 text-base leading-7 text-[#344054]">
-              {invite.referral.foundersNote}
-            </p>
-          </div>
-        ) : null}
-
         <div className="mt-8 flex flex-col gap-4 sm:flex-row">
           <Button asChild className="rounded-xl bg-[#22a56a] px-6 text-white hover:bg-[#1d905d]">
             <Link to="/candidate/profile" search={lookup}>
