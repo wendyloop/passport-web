@@ -158,25 +158,27 @@ function CandidateProfilePage() {
               />
             </ProfileField>
 
-            <ProfileField label="Email">
+            <ProfileField label="Email" required>
               <WarmInput value={invite.candidate.email} readOnly disabled />
             </ProfileField>
 
-            <ProfileField label="LinkedIn">
+            <ProfileField label="LinkedIn" required>
               <WarmInput
                 value={linkedin}
                 onChange={(event) => setLinkedin(event.target.value)}
                 placeholder="https://www.linkedin.com/in/your-name"
                 autoCapitalize="none"
                 autoCorrect="off"
+                required
               />
             </ProfileField>
 
-            <ProfileField label="Location">
+            <ProfileField label="Location" required>
               <WarmInput
                 value={location}
                 onChange={(event) => setLocation(event.target.value)}
                 placeholder="San Francisco, CA"
+                required
               />
             </ProfileField>
 

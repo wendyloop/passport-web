@@ -148,8 +148,16 @@ function normalizePayload(payload: unknown) {
     throw new Error("Full name is required.");
   }
 
+  if (!linkedin) {
+    throw new Error("LinkedIn is required.");
+  }
+
   if (linkedin && !LINKEDIN_PATTERN.test(linkedin)) {
     throw new Error("Enter a valid LinkedIn URL.");
+  }
+
+  if (!location) {
+    throw new Error("Location is required.");
   }
 
   if (!consentConfirmed) {
