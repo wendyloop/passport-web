@@ -67,8 +67,6 @@ const whyNotHiredOptions = [
   "Visa constraints",
   "Other",
 ];
-const ycBatchOptions = ["W23", "S23", "W24", "S24", "W25", "S25", "W26", "S26"];
-
 function ReferPage() {
   const [step, setStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
@@ -337,18 +335,12 @@ function ReferPage() {
                     />
                   </Field>
                   <Field label="YC batch" required>
-                    <Select value={ycBatch} onValueChange={setYcBatch}>
-                      <WarmSelectTrigger>
-                        <SelectValue placeholder="Select YC batch" />
-                      </WarmSelectTrigger>
-                      <WarmSelectContent>
-                        {ycBatchOptions.map((option) => (
-                          <SelectItem key={option} value={option}>
-                            {option}
-                          </SelectItem>
-                        ))}
-                      </WarmSelectContent>
-                    </Select>
+                    <WarmInput
+                      value={ycBatch}
+                      onChange={(event) => setYcBatch(event.target.value)}
+                      placeholder="W25"
+                      required
+                    />
                   </Field>
                 </>
               ) : null}
