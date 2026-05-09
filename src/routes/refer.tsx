@@ -50,12 +50,9 @@ const strengthOptions = [
 const roundReachedOptions = [
   "Recruiter screen",
   "Hiring manager",
-  "Take-home",
-  "Technical screen",
+  "Take-home / technical screen",
   "Panel interview",
-  "Onsite",
-  "Founder round",
-  "Final round",
+  "Onsite / founder round / final round",
 ];
 const whyNotHiredOptions = [
   "Team fit",
@@ -68,7 +65,9 @@ const whyNotHiredOptions = [
   "Another candidate accepted",
   "Hiring freeze",
   "Visa constraints",
+  "Other",
 ];
+const ycBatchOptions = ["W23", "S23", "W24", "S24", "W25", "S25", "W26", "S26"];
 
 function ReferPage() {
   const [step, setStep] = useState(1);
@@ -86,6 +85,7 @@ function ReferPage() {
   const [roleInterviewedFor, setRoleInterviewedFor] = useState("");
   const [roundReached, setRoundReached] = useState("");
   const [whyNotHire, setWhyNotHire] = useState("");
+  const [whyNotHireOther, setWhyNotHireOther] = useState("");
 
   const [strengths, setStrengths] = useState<string[]>([]);
   const [foundersNote, setFoundersNote] = useState("");
@@ -122,7 +122,7 @@ function ReferPage() {
       candidateEmail,
       roleInterviewedFor,
       roundReached,
-      whyNotHire,
+      whyNotHire: whyNotHire === "Other" ? whyNotHireOther : whyNotHire,
       strengths,
       foundersNote,
     });
@@ -152,6 +152,14 @@ function ReferPage() {
 
       return [...current, strength];
     });
+  }
+
+  function handleWhyNotHireChange(value: string) {
+    setWhyNotHire(value);
+
+    if (value !== "Other") {
+      setWhyNotHireOther("");
+    }
   }
 
   async function handleSubmit(event: React.FormEvent) {
@@ -189,7 +197,7 @@ function ReferPage() {
         candidateEmail,
         roleInterviewedFor,
         roundReached,
-        whyNotHire,
+        whyNotHire: whyNotHire === "Other" ? whyNotHireOther : whyNotHire,
         exceptionalWhy: strengths.join(", "),
         strengths,
         foundersNote,
@@ -329,12 +337,18 @@ function ReferPage() {
                     />
                   </Field>
                   <Field label="YC batch" required>
-                    <WarmInput
-                      value={ycBatch}
-                      onChange={(event) => setYcBatch(event.target.value)}
-                      placeholder="W25"
-                      required
-                    />
+                    <Select value={ycBatch} onValueChange={setYcBatch}>
+                      <WarmSelectTrigger>
+                        <SelectValue placeholder="Select YC batch" />
+                      </WarmSelectTrigger>
+                      <WarmSelectContent>
+                        {ycBatchOptions.map((option) => (
+                          <SelectItem key={option} value={option}>
+                            {option}
+                          </SelectItem>
+                        ))}
+                      </WarmSelectContent>
+                    </Select>
                   </Field>
                 </>
               ) : null}
@@ -386,7 +400,7 @@ function ReferPage() {
                     </Select>
                   </Field>
                   <Field label="Why not hired?" required>
-                    <Select value={whyNotHire} onValueChange={setWhyNotHire}>
+                    <Select value={whyNotHire} onValueChange={handleWhyNotHireChange}>
                       <WarmSelectTrigger>
                         <SelectValue placeholder="Select why they weren't hired" />
                       </WarmSelectTrigger>
@@ -399,6 +413,16 @@ function ReferPage() {
                       </WarmSelectContent>
                     </Select>
                   </Field>
+                  {whyNotHire === "Other" ? (
+                    <Field label="Other reason" required>
+                      <WarmInput
+                        value={whyNotHireOther}
+                        onChange={(event) => setWhyNotHireOther(event.target.value)}
+                        placeholder="Add the reason they were not hired"
+                        required
+                      />
+                    </Field>
+                  ) : null}
                 </>
               ) : null}
 
