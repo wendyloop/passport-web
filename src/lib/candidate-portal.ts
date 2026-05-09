@@ -124,7 +124,6 @@ export async function uploadCandidateResume(input: CandidateInviteLookup, file: 
     .from(data.resumeUpload.bucket)
     .uploadToSignedUrl(data.resumeUpload.path, data.resumeUpload.token, file, {
       contentType: file.type || undefined,
-      upsert: true,
     });
 
   if (uploadError) {

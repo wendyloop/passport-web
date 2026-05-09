@@ -79,7 +79,8 @@ export function getCandidateResumeBucket() {
 }
 
 export function buildCandidateResumePath(inviteId: string, extension: string) {
-  return `candidate-profiles/${inviteId}/resume.${extension}`;
+  const version = `${Date.now()}-${crypto.randomUUID().slice(0, 8)}`;
+  return `candidate-profiles/${inviteId}/resume-${version}.${extension}`;
 }
 
 export function getCandidateResumeExtension(fileName: string, contentType: string) {
