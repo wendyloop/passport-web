@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import { ArrowRight, KeyRound, UserRound } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -12,6 +12,11 @@ import { verifyCandidateInvite } from "@/lib/candidate-portal";
 const EMAIL_PATTERN = /^[^\s@]{3,}@[^\s@]+\.[^\s@]+$/i;
 
 export const Route = createFileRoute("/candidate")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    code: typeof search.code === "string" ? search.code : "",
+    email: typeof search.email === "string" ? search.email : "",
+    token: typeof search.token === "string" ? search.token : "",
+  }),
   head: () => ({
     meta: [
       { title: "I've Been Referred — Passport" },
@@ -27,8 +32,31 @@ export const Route = createFileRoute("/candidate")({
 
 function CandidatePage() {
   const navigate = useNavigate();
+  const { token, email: searchEmail, code: searchCode } = Route.useSearch();
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
+
+  useEffect(() => {
+    if (token) {
+      navigate({
+        replace: true,
+        to: "/candidate/claim",
+        search: { token },
+      });
+      return;
+    }
+
+    if (searchEmail && searchCode) {
+      navigate({
+        replace: true,
+        to: "/candidate/claim",
+        search: {
+          email: searchEmail,
+          code: searchCode.replace(/^"+|"+$/g, ""),
+        },
+      });
+    }
+  }, [token, searchEmail, searchCode, navigate]);
 
   const claimMutation = useMutation({
     mutationFn: async () => {
