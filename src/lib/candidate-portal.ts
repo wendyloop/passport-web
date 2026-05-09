@@ -19,7 +19,6 @@ export type CandidateInvitePreview = {
     ycBatch: string | null;
     roleInterviewedFor: string;
     roundReached: string;
-    whyNotHire: string;
     strengths: string[];
   } | null;
   profile: {

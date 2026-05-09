@@ -23,7 +23,6 @@ type CandidateInviteRecord = {
     candidate_email: string;
     role_interviewed_for: string;
     round_reached: string;
-    why_not_hire: string;
     exceptional_why: string;
     strengths: string[];
     founders_note: string;
@@ -315,7 +314,7 @@ async function loadInviteByFilters(
        referrals (
          id, company_name, company_site, referrer_name, referrer_email, yc_batch,
          candidate_name, candidate_email, role_interviewed_for, round_reached,
-         why_not_hire, exceptional_why, strengths,
+         exceptional_why, strengths,
          candidate_invite_status, candidate_profile_status
        ),
        candidate_profiles (
@@ -360,19 +359,18 @@ export function formatCandidateInvite(input: CandidateInviteRecord) {
       name: input.candidate_name,
       email: input.candidate_email,
     },
-    referral: input.referrals
-      ? {
-          companyName: input.referrals.company_name,
-          companySite: input.referrals.company_site,
-          referrerName: input.referrals.referrer_name,
-          referrerEmail: input.referrals.referrer_email,
-          ycBatch: input.referrals.yc_batch,
-          roleInterviewedFor: input.referrals.role_interviewed_for,
-          roundReached: input.referrals.round_reached,
-          whyNotHire: input.referrals.why_not_hire,
-          strengths: input.referrals.strengths ?? [],
-        }
-      : null,
+        referral: input.referrals
+          ? {
+              companyName: input.referrals.company_name,
+              companySite: input.referrals.company_site,
+              referrerName: input.referrals.referrer_name,
+              referrerEmail: input.referrals.referrer_email,
+              ycBatch: input.referrals.yc_batch,
+              roleInterviewedFor: input.referrals.role_interviewed_for,
+              roundReached: input.referrals.round_reached,
+              strengths: input.referrals.strengths ?? [],
+            }
+          : null,
     profile: profile
       ? {
           id: profile.id,

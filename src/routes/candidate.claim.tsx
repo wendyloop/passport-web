@@ -96,10 +96,6 @@ function CandidateClaimPage() {
             label="Why you stood out"
             value={(invite.referral?.strengths ?? []).join(", ") || "Not provided"}
           />
-          <SummaryItem
-            label="Why you didn't join"
-            value={invite.referral?.whyNotHire ?? "Not provided"}
-          />
           <SummaryItem label="Referred email" value={invite.candidate.email} />
         </div>
 
