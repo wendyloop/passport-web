@@ -160,6 +160,25 @@ function ReferPage() {
     }
   }
 
+  function resetForm() {
+    setStep(1);
+    setSubmitting(false);
+    setSubmitted(false);
+    setCompanyName("");
+    setCompanySite("");
+    setReferrerName("");
+    setReferrerEmail("");
+    setYcBatch("");
+    setCandidateName("");
+    setCandidateEmail("");
+    setRoleInterviewedFor("");
+    setRoundReached("");
+    setWhyNotHire("");
+    setWhyNotHireOther("");
+    setStrengths([]);
+    setFoundersNote("");
+  }
+
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
 
@@ -229,7 +248,7 @@ function ReferPage() {
             <Button
               className="rounded-xl border-[#d6dde3] bg-transparent px-6 text-[#161a22] hover:bg-[#f5f7fa]"
               variant="outline"
-              onClick={() => window.location.reload()}
+              onClick={resetForm}
             >
               Submit another referral
             </Button>
