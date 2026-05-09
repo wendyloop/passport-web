@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import { ArrowRight, KeyRound, UserRound } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -33,6 +33,9 @@ export const Route = createFileRoute("/candidate")({
 function CandidatePage() {
   const navigate = useNavigate();
   const { token, email: searchEmail, code: searchCode } = Route.useSearch();
+  const pathname = useRouterState({
+    select: (state) => state.location.pathname,
+  });
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
 
@@ -57,6 +60,12 @@ function CandidatePage() {
       });
     }
   }, [token, searchEmail, searchCode, navigate]);
+
+  const isExactCandidateRoute = /\/candidate\/?$/.test(pathname);
+
+  if (!isExactCandidateRoute) {
+    return <Outlet />;
+  }
 
   const claimMutation = useMutation({
     mutationFn: async () => {
