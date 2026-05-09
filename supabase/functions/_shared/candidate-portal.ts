@@ -38,6 +38,7 @@ type CandidateInviteRecord = {
         linkedin: string | null;
         location: string | null;
         preferred_roles: string[];
+        resume_path: string | null;
         intro_note: string | null;
         consent_confirmed: boolean;
         profile_status: string;
@@ -46,6 +47,7 @@ type CandidateInviteRecord = {
 };
 
 const DAY_IN_MS = 24 * 60 * 60 * 1000;
+const CANDIDATE_RESUME_BUCKET = "candidate-resumes";
 
 export function createCandidateInviteToken() {
   return crypto.randomUUID().replace(/-/g, "") + crypto.randomUUID().replace(/-/g, "");
@@ -70,6 +72,31 @@ export async function hashCandidateClaimCode(code: string) {
 
 export function candidateInviteExpiry(days = 7) {
   return new Date(Date.now() + days * DAY_IN_MS).toISOString();
+}
+
+export function getCandidateResumeBucket() {
+  return CANDIDATE_RESUME_BUCKET;
+}
+
+export function buildCandidateResumePath(inviteId: string, extension: string) {
+  return `candidate-profiles/${inviteId}/resume.${extension}`;
+}
+
+export function getCandidateResumeExtension(fileName: string, contentType: string) {
+  const extension = fileName.split(".").pop()?.toLowerCase();
+
+  if (contentType === "application/pdf" || extension === "pdf") {
+    return "pdf";
+  }
+
+  if (
+    contentType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
+    extension === "docx"
+  ) {
+    return "docx";
+  }
+
+  throw new Error("Resume must be a PDF or DOCX file.");
 }
 
 export function getPublicAppUrl() {
@@ -291,7 +318,7 @@ async function loadInviteByFilters(
          candidate_invite_status, candidate_profile_status
        ),
        candidate_profiles (
-         id, full_name, email, linkedin, location, preferred_roles, intro_note, consent_confirmed, profile_status
+         id, full_name, email, linkedin, location, preferred_roles, resume_path, intro_note, consent_confirmed, profile_status
        )`,
   );
 
@@ -353,6 +380,7 @@ export function formatCandidateInvite(input: CandidateInviteRecord) {
           linkedin: profile.linkedin,
           location: profile.location,
           preferredRoles: profile.preferred_roles ?? [],
+          resumePath: profile.resume_path,
           introNote: profile.intro_note,
           consentConfirmed: profile.consent_confirmed,
           profileStatus: profile.profile_status,

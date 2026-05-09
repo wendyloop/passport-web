@@ -273,6 +273,9 @@ verify_jwt = false
 [functions.complete-candidate-profile]
 verify_jwt = false
 
+[functions.create-candidate-resume-upload]
+verify_jwt = false
+
 # Configure logged in session timeouts.
 # [auth.sessions]
 # Force log out after the specified duration.

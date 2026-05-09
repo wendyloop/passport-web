@@ -29,6 +29,7 @@ export type CandidateInvitePreview = {
     linkedin: string | null;
     location: string | null;
     preferredRoles: string[];
+    resumePath: string | null;
     introNote: string | null;
     consentConfirmed: boolean;
     profileStatus: string;
@@ -37,6 +38,15 @@ export type CandidateInvitePreview = {
 
 type CandidateInviteEnvelope = {
   invite: CandidateInvitePreview;
+  success: boolean;
+};
+
+type CandidateResumeUploadEnvelope = {
+  resumeUpload: {
+    bucket: string;
+    path: string;
+    token: string;
+  };
   success: boolean;
 };
 
@@ -54,6 +64,7 @@ export type CandidateProfileInput = CandidateInviteLookup & {
   linkedin: string;
   location: string;
   preferredRoles: string[];
+  resumePath: string;
   introNote: string;
   consentConfirmed: boolean;
 };
@@ -90,6 +101,37 @@ export async function completeCandidateProfile(input: CandidateProfileInput) {
   }
 
   return data.invite;
+}
+
+export async function uploadCandidateResume(input: CandidateInviteLookup, file: File) {
+  const supabase = getSupabaseClient();
+  const { data, error } = await supabase.functions.invoke<CandidateResumeUploadEnvelope>(
+    "create-candidate-resume-upload",
+    {
+      body: {
+        ...input,
+        resumeFileName: file.name,
+        resumeContentType: file.type,
+      },
+    },
+  );
+
+  if (error || !data?.resumeUpload) {
+    throw new Error(await getFunctionErrorMessage(error, "Could not prepare the resume upload."));
+  }
+
+  const { error: uploadError } = await supabase.storage
+    .from(data.resumeUpload.bucket)
+    .uploadToSignedUrl(data.resumeUpload.path, data.resumeUpload.token, file, {
+      contentType: file.type || undefined,
+      upsert: true,
+    });
+
+  if (uploadError) {
+    throw new Error(uploadError.message);
+  }
+
+  return data.resumeUpload.path;
 }
 
 async function getFunctionErrorMessage(error: unknown, fallback: string) {

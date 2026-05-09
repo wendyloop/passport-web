@@ -1,9 +1,11 @@
 import {
   formatCandidateInvite,
+  getCandidateResumeBucket,
   loadCandidateInviteByCode,
   loadCandidateInviteByToken,
 } from "../_shared/candidate-portal.ts";
 import { errorResponse, jsonResponse, optionsResponse } from "../_shared/http.ts";
+import { ensureObjectExists } from "../_shared/storage.ts";
 import { createAdminClient } from "../_shared/supabase.ts";
 
 type CandidateProfilePayload = {
@@ -14,6 +16,7 @@ type CandidateProfilePayload = {
   linkedin?: string;
   location?: string;
   preferredRoles?: string[];
+  resumePath?: string;
   introNote?: string;
   consentConfirmed?: boolean;
 };
@@ -40,6 +43,8 @@ Deno.serve(async (request) => {
       throw new Error("This referral record could not be found.");
     }
 
+    await ensureObjectExists(supabase, getCandidateResumeBucket(), payload.resumePath);
+
     const existingProfile = invite.candidate_profiles?.[0] ?? null;
 
     const { data, error } = await supabase
@@ -53,6 +58,7 @@ Deno.serve(async (request) => {
           linkedin: payload.linkedin,
           location: payload.location,
           preferred_roles: payload.preferredRoles,
+          resume_path: payload.resumePath,
           intro_note: payload.introNote,
           consent_confirmed: payload.consentConfirmed,
           profile_status: "completed",
@@ -62,7 +68,7 @@ Deno.serve(async (request) => {
         },
       )
       .select(
-        "id, full_name, email, linkedin, location, preferred_roles, intro_note, consent_confirmed, profile_status",
+        "id, full_name, email, linkedin, location, preferred_roles, resume_path, intro_note, consent_confirmed, profile_status",
       )
       .single();
 
@@ -103,6 +109,7 @@ Deno.serve(async (request) => {
         linkedin: data.linkedin,
         location: data.location,
         preferred_roles: data.preferred_roles,
+        resume_path: data.resume_path,
         intro_note: data.intro_note,
         consent_confirmed: data.consent_confirmed,
         profile_status: data.profile_status,
@@ -135,6 +142,7 @@ function normalizePayload(payload: unknown) {
   const linkedin = input.linkedin?.trim() || null;
   const location = input.location?.trim() || null;
   const introNote = input.introNote?.trim() || null;
+  const resumePath = input.resumePath?.trim();
   const preferredRoles = Array.from(
     new Set((input.preferredRoles ?? []).map((value) => value.trim()).filter(Boolean)),
   );
@@ -160,6 +168,10 @@ function normalizePayload(payload: unknown) {
     throw new Error("Location is required.");
   }
 
+  if (!resumePath) {
+    throw new Error("Resume is required.");
+  }
+
   if (!consentConfirmed) {
     throw new Error("Consent is required before submitting your profile.");
   }
@@ -172,6 +184,7 @@ function normalizePayload(payload: unknown) {
     linkedin,
     location,
     preferredRoles,
+    resumePath,
     introNote,
     consentConfirmed,
   };

@@ -3,6 +3,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
+import { ResumeUpload } from "@/components/application/ResumeUpload";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -11,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   completeCandidateProfile,
   type CandidateInvitePreview,
+  uploadCandidateResume,
   verifyCandidateInvite,
 } from "@/lib/candidate-portal";
 import { toast } from "sonner";
@@ -40,6 +42,8 @@ function CandidateProfilePage() {
   const [linkedin, setLinkedin] = useState("");
   const [location, setLocation] = useState("");
   const [preferredRoles, setPreferredRoles] = useState("");
+  const [resumeFile, setResumeFile] = useState<File | null>(null);
+  const [existingResumePath, setExistingResumePath] = useState<string | null>(null);
   const [introNote, setIntroNote] = useState("");
   const [consentConfirmed, setConsentConfirmed] = useState(false);
   const [submittedInvite, setSubmittedInvite] = useState<CandidateInvitePreview | null>(null);
@@ -64,13 +68,21 @@ function CandidateProfilePage() {
     setPreferredRoles(
       existingProfile?.preferredRoles.join(", ") ?? invite.referral?.roleInterviewedFor ?? "",
     );
+    setExistingResumePath(existingProfile?.resumePath ?? null);
+    setResumeFile(null);
     setIntroNote(existingProfile?.introNote ?? "");
     setConsentConfirmed(existingProfile?.consentConfirmed ?? false);
   }, [inviteQuery.data]);
 
   const saveMutation = useMutation({
-    mutationFn: () =>
-      completeCandidateProfile({
+    mutationFn: async () => {
+      let resumePath = existingResumePath;
+
+      if (resumeFile) {
+        resumePath = await uploadCandidateResume(lookup!, resumeFile);
+      }
+
+      return completeCandidateProfile({
         ...lookup!,
         fullName,
         linkedin,
@@ -79,9 +91,11 @@ function CandidateProfilePage() {
           .split(",")
           .map((value) => value.trim())
           .filter(Boolean),
+        resumePath: resumePath ?? "",
         introNote,
         consentConfirmed,
-      }),
+      });
+    },
     onSuccess: (invite) => {
       setSubmittedInvite(invite);
     },
@@ -180,6 +194,31 @@ function CandidateProfilePage() {
                 placeholder="San Francisco, CA"
                 required
               />
+            </ProfileField>
+
+            <ProfileField label="Resume" required>
+              {existingResumePath && !resumeFile ? (
+                <div className="rounded-[1.5rem] border border-[#dbe2e7] bg-[#fbfcfd] p-4">
+                  <div className="flex items-center justify-between gap-4">
+                    <div>
+                      <p className="text-base font-medium text-[#171a22]">Resume uploaded</p>
+                      <p className="mt-1 text-sm text-[#667084]">
+                        {existingResumePath.split("/").pop() ?? "resume"}
+                      </p>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="rounded-xl border-[#d7dde3] bg-white px-4 text-[#171a22] hover:bg-[#f6f8fa]"
+                      onClick={() => setExistingResumePath(null)}
+                    >
+                      Replace
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <ResumeUpload value={resumeFile} onChange={setResumeFile} />
+              )}
             </ProfileField>
 
             <ProfileField label="Preferred roles">
