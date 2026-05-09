@@ -293,7 +293,7 @@ function ReferPage() {
                       required
                     />
                   </Field>
-                  <Field label="Company site" required hint="Used for legitimacy checks.">
+                  <Field label="Company site" required>
                     <WarmInput
                       value={companySite}
                       onChange={(event) => setCompanySite(event.target.value)}
@@ -328,7 +328,7 @@ function ReferPage() {
                       required
                     />
                   </Field>
-                  <Field label="YC batch" required requiredMarker="dot">
+                  <Field label="YC batch" required>
                     <WarmInput
                       value={ycBatch}
                       onChange={(event) => setYcBatch(event.target.value)}
@@ -560,29 +560,17 @@ function Field({
   label,
   hint,
   required,
-  requiredMarker = "asterisk",
   children,
 }: {
   label: React.ReactNode;
   hint?: string;
   required?: boolean;
-  requiredMarker?: "asterisk" | "dot";
   children: React.ReactNode;
 }) {
   return (
     <div className="space-y-3">
       <Label className="text-[1.35rem] font-medium text-[#161a22]">
-        {label}{" "}
-        {required ? (
-          requiredMarker === "dot" ? (
-            <span
-              aria-hidden="true"
-              className="inline-block h-2.5 w-2.5 rounded-full bg-[#dc2626] align-middle"
-            />
-          ) : (
-            <span className="text-destructive">*</span>
-          )
-        ) : null}
+        {label} {required ? <span className="text-destructive">*</span> : null}
       </Label>
       {children}
       {hint ? <p className="text-sm leading-6 text-[#667085]">{hint}</p> : null}
