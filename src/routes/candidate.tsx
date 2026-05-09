@@ -164,6 +164,7 @@ function CandidatePage() {
 
           <div className="mt-8">
             <Button
+              type="button"
               className="h-12 w-full rounded-xl bg-[#22a56a] text-white hover:bg-[#1d905d]"
               disabled={claimMutation.isPending}
               onClick={() => claimMutation.mutate()}

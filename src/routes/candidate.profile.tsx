@@ -231,6 +231,7 @@ function CandidateProfilePage() {
               </Link>
             </Button>
             <Button
+              type="button"
               onClick={() => saveMutation.mutate()}
               disabled={saveMutation.isPending}
               className="rounded-xl bg-[#22a56a] px-6 text-white hover:bg-[#1d905d]"
